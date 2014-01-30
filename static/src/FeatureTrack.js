@@ -21,9 +21,8 @@ var FeatureTrack = Lane.extend({
      * @returns {*}
      */
     getTickerPositionX: function(coord) {
-      var offset = parseInt(this.chart.offset) || 0;
       var position = coord - this.chart.scale.min;
-      return ( this.chart.convertNtsToPixels( position ) + offset);
+      return ( this.chart.convertNtsToPixels( position ) );
    },
 
     /**

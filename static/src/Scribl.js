@@ -8,8 +8,62 @@
  * Chase Miller 2011
  */
 function writeMessage (message) {
-        chart1.text.setText(message);
+    chart1.text.setText(message);
+    chart1.messageLayer.draw();
+}
+
+var isDragging=false;
+var initCoords= 0, currentCoords = 0;
+var initAdjXPos;
+var actualOffset;
+var dragDisplayLayer;
+var dragDisplayRect;
+function startDrag (mouseX,mouseY,which) {
+    if (which>1){ //not a left-click, cancel everything
+        dragDisplayRect.setVisible(false);
+        dragDisplayLayer.draw();
+        isDragging=false;
+        chart1.text.setText('Stopping drag');
         chart1.messageLayer.draw();
+    } else {
+        isDragging=true;
+        var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
+        initAdjXPos=adjXPos;
+        initCoords=Math.round(adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min);
+        chart1.text.setText('starting drag ');
+        chart1.messageLayer.draw();
+        dragDisplayRect.setVisible(true);
+        dragDisplayRect.setX(adjXPos);
+        dragDisplayLayer.draw();
+    }
+}
+
+
+function checkDrag (mouseX,mouseY) {
+    if (isDragging) {
+        var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
+        var currentCoords=adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min;
+        chart1.text.setText('moving to '+adjXPos+', coords='+currentCoords);
+        chart1.messageLayer.draw();
+        dragDisplayRect.setWidth(adjXPos-initAdjXPos);
+        dragDisplayLayer.draw();
+    }
+}
+
+function stopDrag (mouseX,mouseY) {
+    if (isDragging) {
+        var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
+        var currentCoords=adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min;
+        chart1.text.setText('Finished to '+adjXPos+', coords='+currentCoords);
+        chart1.messageLayer.draw();
+        dragDisplayRect.setWidth(adjXPos-initAdjXPos);
+        dragDisplayLayer.draw();
+
+        $('input[name="left"]').val(Math.round(initCoords));
+        $('input[name="right"]').val(Math.round(currentCoords));
+        updateAjax();
+        isDragging=false;
+    }
 }
 
 LANE_HEIGHT=50;
@@ -537,8 +591,10 @@ var Scribl = Class.extend({
         messageLayer.add(this.text);
         this.stage.add(messageLayer);
 
-        var layer=this.drawScale(new Kinetic.Layer({offsetY:-(DRAWINGS_HEIGHT)}));
-        this.stage.add(layer);
+        var scaleLayer=this.drawScale(new Kinetic.Layer({offsetY:-(DRAWINGS_HEIGHT)}));
+        this.stage.add(scaleLayer);
+        //scaleLayer.on('mouseover',function(){alert('wtf?');});
+
 
       // initalize variables
 
@@ -555,6 +611,14 @@ var Scribl = Class.extend({
         this.featureTrack.draw(featuresLayer,resultsLayer);
          this.stage.add(featuresLayer);
         this.stage.add(resultsLayer);
+
+        dragDisplayLayer = new Kinetic.Layer({});
+        dragDisplayRect=new Kinetic.Rect({visible:false,height:450,y:50,width:10,x:0,stroke:'purple'});
+        dragDisplayLayer.add(dragDisplayRect);
+        this.stage.add(dragDisplayLayer);
+        $('#container').mousedown(function(evt) {startDrag(evt.pageX,evt.pageY,evt.which);});
+        $('#container').mousemove(function(evt) {checkDrag(evt.pageX,evt.pageY);});
+        $('#container').mouseup(function(evt) {stopDrag(evt.pageX,evt.pageY);});
    },
 
     /**

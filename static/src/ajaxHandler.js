@@ -87,10 +87,11 @@ function updateAjax() {
     })
 }
 
+var canvas=null;
 function draw(canvasName) {
 
         // Get Canvas and Create Chart
-        var canvas = document.getElementById(canvasName);
+        canvas = document.getElementById(canvasName);
 
         // Create Chart
         chart1 = new Scribl(canvas, 800);
