@@ -15,65 +15,78 @@ var BlockArrow = Glyph.extend({
      * @param {Int} position - start position of the glyph
      * @param {Int} length - length of the glyph
      * @param {String} strand - '+' or '-' strand
-     * @param {Hash} [opts] - optional hash of attributes that can be applied to glyph
      * @api public
      */
-    init: function (chart,type, position, length, strand, opts) {
+    init: function (chart,type, position, length, strand, height) {
         this.chart=chart;
         // call super init method to initialize glyph
-        this._super(type, position, length, strand, opts);
-        this.slope = 1;
+        this._super(type, position, length, strand);
+        this.height=height;
         this.glyphType = "BlockArrow";
     },
 
     draw: function (layer) {
-          var blockarrow = this;
-         // see if optional parameters are set and get chart specific info
-         var length = length || blockarrow.getPixelLength();
-         var height = height || blockarrow.getHeight();
+        var blockarrow = this;
+        // see if optional parameters are set and get chart specific info
+        var length = length || blockarrow.getPixelLength();
 
-         var side = length*.75;
-
-           var lenArrow=height/2;
-            var heightRect = Math.round(height / 4);
-            var heightArrow = Math.round(height / 2);
-            var lenRect=length-lenArrow;
-         // draw lines
+        var lenArrow=Math.min(.4*length,GENE_HEIGHT);
+        var heightRect = Math.round(GENE_HEIGHT / 4);
+        var heightArrow = Math.round(GENE_HEIGHT / 2);
+        var lenRect=length-lenArrow;
+        // draw lines
         var offsetX=this.getPixelPositionX();
         var group=new Kinetic.Group({
             offsetX:-offsetX,
-            offsetY:LANE_HEIGHT/2
+            offsetY:TFBS_HEIGHT + this.height
         });
-           var poly=new Kinetic.Line({
-               points:[0,heightRect,0,-heightRect,lenRect,-heightRect,lenRect,-heightArrow,length,0,lenRect,heightArrow,lenRect,heightRect],
-               stroke:'black',
-               closed:true
-           });
+        var poly=new Kinetic.Line({
+            points:[0,heightRect,0,-heightRect,lenRect,-heightRect,lenRect,-heightArrow,length,0,lenRect,heightArrow,lenRect,heightRect],
+            stroke:'black',
+            closed:true
+        });
+
+        /*
+        Compute where the center of the text should be
+        Want to align between rectangle edge and halfway into arrowhead
+         */
+        var center;
         if (this.strand=='-') {
             poly.scale({x:-1,y:1});
             poly.offsetX(length);
-        }
+            center=(lenRect/2+lenRect+lenArrow)/2;
+        } else
+            center=(lenRect+lenArrow/2)/2;
 
         poly.name=this.name;
         poly.on('mouseover', function() {
-        writeMessage(this.name);
-      });
-      poly.on('mouseout', function() {
-        writeMessage('');
-      });
+            writeMessage(this.name);
+        });
+        poly.on('mouseout', function() {
+            writeMessage('');
+        });
         //layer.add()
-    group.add(poly);
-     group.add(new Kinetic.Text({
-         text:this.name,
-         x:length/2,
-         y:-6,
-         fontSize:14,
-         fill:'black',
-     }));
+        group.add(poly);
+
+        //Render the text
+        var text=new Kinetic.Text({
+            text:this.name,
+            x:0,
+            y:-6,
+            fontSize:14,
+            fill:'black',
+        })
+        var x=center-text.width()/2;
+        if ( x-group.offsetX() < 20)
+            x=20+group.offsetX();
+        else if ( (x-group.offsetX()) > this.chart.width-20)
+            x=group.offsetX()+this.chart.width-60;
+        text.setX(x);
+        group.add(text);
         layer.add(group);
 
 
     }
-   });
+});
 		
 

@@ -2,7 +2,8 @@
  * Created by davidc on 1/17/14.
  */
 var TFBS_HEIGHT=25;
-var RESULT_HEIGHT=150; //height of the panel where we draw the experimental data
+var GENE_HEIGHT=2*TFBS_HEIGHT;
+var RESULT_HEIGHT=200; //height of the panel where we draw the experimental data
 var FeatureTrack = Lane.extend({
     init: function(chart, geneHeight) {
       // defaults
@@ -21,9 +22,8 @@ var FeatureTrack = Lane.extend({
      * @returns {*}
      */
     getTickerPositionX: function(coord) {
-      var offset = parseInt(this.chart.offset) || 0;
       var position = coord - this.chart.scale.min;
-      return ( this.chart.convertNtsToPixels( position ) + offset);
+      return ( this.chart.convertNtsToPixels( position ) );
    },
 
     /**
@@ -83,6 +83,21 @@ var FeatureTrack = Lane.extend({
         return 0;
     },
 
+    addGene: function (left, length,name,strand) {
+        strand = strand || '+';
+        var cutOff = Math.round(this.chart.convertPixelstoNts(15));
+        if (length < cutOff )
+            var rightAdjusted=left+cutOff;
+        else
+            var rightAdjusted=left+length;
+        var r=this.findLowestRow(left,rightAdjusted,0);
+        var p=new BlockArrow(this.chart,'gene',left,length,strand,TFBS_HEIGHT*r/*+this.geneHeight*/);
+        p.name=name;
+        p.lane=this;
+        this.items.push({'left':left,'right':rightAdjusted,'level':r,'feature':p,'height':2});
+        return p;
+    },
+
     addTicker: function(left,strand, yVals) {
         var t={'left':left,'strand':strand,'yVals':yVals}//new sgRNATicker(this,left,strand,yVals);
         t.lane=this;
@@ -100,7 +115,7 @@ var FeatureTrack = Lane.extend({
         var p=new sRNA('sRNA',left,length,strand,TFBS_HEIGHT*r/*+this.geneHeight*/);
         p.name=name;
         p.lane=this;
-        this.items.push({'left':left,'right':rightAdjusted,'level':r,'feature':p});
+        this.items.push({'left':left,'right':rightAdjusted,'level':r,'feature':p,'height':1});
         return p;
     },
 
@@ -115,7 +130,7 @@ var FeatureTrack = Lane.extend({
         var p=new Promoter('promoter',left,length,strand,TFBS_HEIGHT*r/*+this.geneHeight*/);
         p.name=name;
         p.lane=this;
-        this.items.push({'left':left,'right':rightAdjusted,'level':r,'feature':p});
+        this.items.push({'left':left,'right':rightAdjusted,'level':r,'feature':p,'height':1});
         return p;
     },
 
@@ -126,7 +141,7 @@ var FeatureTrack = Lane.extend({
         var p=new TFBS('TFBS',left,length,strand,25*r);
         p.name=name;
         p.lane=this;
-        this.items.push({'left':left,'right':right,'level':r,'feature':p});
+        this.items.push({'left':left,'right':right,'level':r,'feature':p,'height':1});
         return p;
     },
 
@@ -148,7 +163,8 @@ var FeatureTrack = Lane.extend({
                 continue;
             //No longer assumes that items is sorted
             //If we get to here, items[i] is within the range of interest
-            blockedRows[this.items[i].level]=true;
+            for (var l=0;l<this.items[i].height;l++)
+                blockedRows[this.items[i].level+l]=true;
         }
 
         for (var j=minRow;;j++) {
@@ -158,31 +174,3 @@ var FeatureTrack = Lane.extend({
         }
     }
 });
-
-/*
-Below is from http://stackoverflow.com/questions/4576724/dotted-stroke-in-canvas
- */
-var CP = window.CanvasRenderingContext2D && CanvasRenderingContext2D.prototype;
-if (CP && CP.lineTo){
-  CP.dashedLine = function(x,y,x2,y2,dashArray){
-    if (!dashArray) dashArray=[10,5];
-    if (dashLength==0) dashLength = 0.001; // Hack for Safari
-    var dashCount = dashArray.length;
-    this.moveTo(x, y);
-    var dx = (x2-x), dy = (y2-y);
-    var slope = dx ? dy/dx : 1e15;
-    var distRemaining = Math.sqrt( dx*dx + dy*dy );
-    var dashIndex=0, draw=true;
-    while (distRemaining>=0.1){
-      var dashLength = dashArray[dashIndex++%dashCount];
-      if (dashLength > distRemaining) dashLength = distRemaining;
-      var xStep = Math.sqrt( dashLength*dashLength / (1 + slope*slope) );
-      if (dx<0) xStep = -xStep;
-      x += xStep
-      y += slope*xStep;
-      this[draw ? 'lineTo' : 'moveTo'](x,y);
-      distRemaining -= dashLength;
-      draw = !draw;
-    }
-  }
-}

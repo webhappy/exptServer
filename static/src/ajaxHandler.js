@@ -20,9 +20,10 @@ function updateAjax() {
         type:"GET",
         dataType:"json",
         success:function (json) {
-            chart1.clear();
             var rightVal=parseInt($('input[name="right"]').val());
             var leftVal=parseInt($('input[name="left"]').val());
+            chart1.clear();
+            $('input[name="gene"]').val('');
             chart1.scale.max=rightVal;
             chart1.scale.min=leftVal;
             var genes = json[0];
@@ -40,8 +41,7 @@ function updateAjax() {
                 var strand = cur[1];
                 var left = cur[2];
                 var len = cur[3];
-                var thisGene=chart1.addGene(left,len,strand);
-                thisGene.name=name;
+                var thisGene=chart1.addGene(left,len,strand,name);
             }
 
             for (var j=0;j<promoters.length;j++) {
@@ -87,17 +87,50 @@ function updateAjax() {
     })
 }
 
-function draw(canvasName) {
+function getCoordsByAJAX (gene) {
+    $.ajax({
+        url: '/getGeneCoords',
+        data: {
+            gene: gene
+        },
+        type:"GET",
+        dataType:"json",
+        success:function (json) {
+            var left=json[0];
+            var right=json[1];
+            left-=200;
+            right+=200;
+            if (left==-1) {
+                alert('Coords for gene '+gene+' could not be located.');
+                return
+            } else {
+                $('input[name="left"]').val(left);
+                $('input[name="right"]').val(right);
+                updateAjax();
+            }
+        },
+        error:function(xhr,status){alert('Error getting JSON for gene coords')}
+    })
+}
 
+var canvas=null;
+function initializePage(canvasName) {
         // Get Canvas and Create Chart
-        var canvas = document.getElementById(canvasName);
+        canvas = document.getElementById(canvasName);
 
         // Create Chart
         chart1 = new Scribl(canvas, 800);
         chart1.ntOffset=0;
 
     $('#slider').noUiSlider({range:[0, MAX_NT_SLIDER],start:[2250,2750],handles:2,connect:true,behaviour:'drag',set:updateAjax,slide:updateRanges});
-
+    $('input[name="gene"]').keypress(function(evt){
+            if (evt.which==13)
+                getCoordsByAJAX($('input[name="gene"]').val());
+        });
+    $('input[name="gene"]').blur(function(evt){getCoordsByAJAX($('input[name="gene"]').val());
+        });
+    updateAjax();
+    $(window).resize(function(){chart1.draw()});
 }
 
 $(function() {
