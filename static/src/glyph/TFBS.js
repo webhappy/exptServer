@@ -56,8 +56,8 @@ var TFBS = Glyph.extend({
             fontSize:15,
             fill:'black'
         });
-        while ( text.fontSize> 10 && text.width()>length)
-            text.fontSize-=1;
+        while ( text.fontSize()> 10 && text.width()>length)
+            text.fontSize(text.fontSize()-1);
         if (this.strand=='-')
             text.offsetX(length);
 

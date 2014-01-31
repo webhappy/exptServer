@@ -30,7 +30,7 @@ var BlockArrow = Glyph.extend({
         // see if optional parameters are set and get chart specific info
         var length = length || blockarrow.getPixelLength();
 
-        var lenArrow=Math.min(.4*length,GENE_HEIGHT);
+        var lenArrow=Math.min(.3*length,GENE_HEIGHT);
         var heightRect = Math.round(GENE_HEIGHT / 4);
         var heightArrow = Math.round(GENE_HEIGHT / 2);
         var lenRect=length-lenArrow;
@@ -76,12 +76,15 @@ var BlockArrow = Glyph.extend({
             fontSize:14,
             fill:'black',
         })
+        while ( text.fontSize()> 10 && text.width()>length)
+            text.fontSize(text.fontSize()-1);
         var x=center-text.width()/2;
         if ( x-group.offsetX() < 20)
             x=20+group.offsetX();
         else if ( (x-group.offsetX()) > this.chart.width-20)
             x=group.offsetX()+this.chart.width-60;
         text.setX(x);
+
         group.add(text);
         layer.add(group);
 
