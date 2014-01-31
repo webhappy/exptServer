@@ -31,8 +31,8 @@ var BlockArrow = Glyph.extend({
         var length = length || blockarrow.getPixelLength();
 
         var lenArrow=Math.min(.3*length,GENE_HEIGHT);
-        var heightRect = Math.round(GENE_HEIGHT / 4);
-        var heightArrow = Math.round(GENE_HEIGHT / 2);
+        var heightRect =Math.max(10, Math.round(lenArrow/4)); //Math.round(GENE_HEIGHT / 4);
+        var heightArrow = Math.max(18,Math.round(lenArrow/2));//(GENE_HEIGHT / 2);
         var lenRect=length-lenArrow;
         // draw lines
         var offsetX=this.getPixelPositionX();
@@ -43,6 +43,7 @@ var BlockArrow = Glyph.extend({
         var poly=new Kinetic.Line({
             points:[0,heightRect,0,-heightRect,lenRect,-heightRect,lenRect,-heightArrow,length,0,lenRect,heightArrow,lenRect,heightRect],
             stroke:'black',
+            fill:'#ffbb73',
             closed:true
         });
 

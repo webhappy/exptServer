@@ -6,10 +6,14 @@ import csv
 app = Flask(__name__)
 
 @app.route('/getFeatures')
-def featurePage():
+def getFeaturesAnaerobic():
     left = request.args.get('left', 0, type=int)
     right = request.args.get('right', 0, type=int)
-    return json.dumps([getGenes(left,right),getPromoters(left,right),getTFBS(left,right),getExptResults(left,right),getsRNA(left,right)])
+    expt = request.args.get('expt')
+    if expt == 'aerobicOnly':
+        return json.dumps([getGenes(left,right),getPromoters(left,right),getTFBS(left,right),getExptResultsFromAerobic(left,right),getsRNA(left,right)])
+    else: # if expt == 'anaerobicOnly'
+        return json.dumps([getGenes(left,right),getPromoters(left,right),getTFBS(left,right),getExptResultsFromAnaerobic(left,right),getsRNA(left,right)])
 
 @app.route('/getGeneCoords')
 def getGeneCoords():
@@ -19,7 +23,7 @@ def getGeneCoords():
             return json.dumps([left_boundary,right_boundary])
     return json.dumps([-1,-1])  # Did not find this gene, return [-1,-1] as error code
 
-def getExptResults (left, right):
+def getExptResultsFromAerobic (left, right):
     """
     Returns dict with keys of exptNames, exptColors, and exptResults
     exptResults is a dictionary of arrays. exptResults[Pos] represents results at nucleotide Pos
@@ -37,6 +41,35 @@ def getExptResults (left, right):
     ret['exptNames']=['Aerobic 1', 'Aerobic 2','Aerobic 3']
     ret['exptColors']=['orange','blue','blue']
     curExpt=aerobicExptData
+    for k in range(len(curExpt['pos'])):
+        curPos = curExpt['pos'][k]
+        if curPos>=left and curPos +20 <= right:
+            exptResults[curPos]=[curExpt['strand'][k]];  # Initialize a list with strand
+            exptResults[curPos].append(curExpt['replicate1'][k])
+            exptResults[curPos].append(curExpt['replicate2'][k])
+            exptResults[curPos].append(curExpt['replicate3'][k])
+    ret['exptResults']=exptResults
+    assert len(ret['exptNames']) == len(ret['exptColors'])  # hopefully EXPT_RESULTS also have same length at each position
+    return ret
+
+def getExptResultsFromAnaerobic (left, right):
+    """
+    Returns dict with keys of exptNames, exptColors, and exptResults
+    exptResults is a dictionary of arrays. exptResults[Pos] represents results at nucleotide Pos
+    exptResults[pos] contains an array of results
+    exptDescriptions[j] is a text description for the results at exptResults[anyPos][j]
+    exptColors[j] is the color used to render all results corresponding to  exptResults[anyPos][j]
+
+    @param left:
+    @param right:
+    @return:
+    """
+    ret={}
+
+    exptResults={}
+    ret['exptNames']=['Anaerobic 1', 'Anaerobic 2','Anaerobic 3']
+    ret['exptColors']=['black','black','black']
+    curExpt=anaerobicExptData
     for k in range(len(curExpt['pos'])):
         curPos = curExpt['pos'][k]
         if curPos>=left and curPos +20 <= right:
@@ -106,10 +139,25 @@ def add_numbers():
     b = request.args.get('b', 0, type=int)
     return jsonify(result=a + b)
 
+@app.route('/aerobicOnly')
+def showAerobicOnly():
+    """
+    Tells javascript to call getFeaturesAerobic
+    @return:
+    """
+    return render_template('simple.html',ajaxFunction='getFeaturesAerobic',time=end-start)
+
+@app.route('/anaerobicOnly')
+def showAnaerobicOnly():
+    """
+    Tells javascript to call getFeaturesAerobic
+    @return:
+    """
+    return render_template('simple.html',ajaxFunction='getFeaturesAnaerobic',time=end-start)
 
 @app.route('/')
-def hello_world():
-    return render_template('simple.html',time=end-start)
+def index():
+    return showAerobicOnly()
 
 
 if __name__ == '__main__':

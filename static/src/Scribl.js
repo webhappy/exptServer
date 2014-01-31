@@ -18,13 +18,14 @@ var initAdjXPos;
 var actualOffset;
 var dragDisplayLayer;
 var dragDisplayRect;
+var lastScrollTime=0; // In the callback, store the time and don't allow another event until enough time has processed
 DRAWINGS_HEIGHT=300;
 function startDrag (mouseX,mouseY,which) {
     if (which>1){ //not a left-click, cancel everything
         dragDisplayRect.setVisible(false);
         dragDisplayLayer.draw();
         isDragging=false;
-        chart1.text.setText('Stopping drag');
+        chart1.text.setText('Aborting drag');
         chart1.messageLayer.draw();
     } else {
         isDragging=true;
@@ -116,7 +117,7 @@ var Scribl = Class.extend({
         this.scale.pretty = true;
         this.scale.max = undefined;
         this.scale.min = undefined;
-        this.scale.auto = true;
+        this.scale.auto = false;
         this.scale.userControlled = false;
         this.scale.positions = [0]; // by default scale goes on top
         this.scale.off = false;
@@ -608,6 +609,30 @@ var Scribl = Class.extend({
         $('input[name="right"]').keypress(function(evt){
             if (evt.which==13)
                 updateAjax();
+        });
+        $('#container').mousewheel(function(event,delta) {
+            if ( lastScrollTime && (new Date().getTime()-lastScrollTime) <150 )
+            { return;} //abort if we just scrolled
+            if (delta > 0) {
+                //zoom out
+                var factor=200;//Math.max(100,Math.round(.01*chart1.scale.min));
+                //factor=Math.min(factor,500);
+                  var newLeft=chart1.scale.min-factor;
+                  var newRight=chart1.scale.max+factor;
+            }else {
+                //zoom in
+                var factor=-200;//Math.max(100,Math.round(.01*chart1.scale.min));
+                //factor=Math.min(factor,500);
+                  var newLeft=chart1.scale.min-factor;
+                  var newRight=chart1.scale.max+factor;
+            }
+            if (newRight-newLeft < 100) {
+                return;
+            }
+            $('input[name="left"]').val(newLeft);
+                $('input[name="right"]').val(newRight);
+                updateAjax();
+                lastScrollTime=new Date().getTime();
         });
    },
 

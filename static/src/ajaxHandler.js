@@ -10,12 +10,12 @@ function updateRanges () {
 }
 
 function updateAjax() {
-     //   alert('here');
     $.ajax({
-        url: '/getFeatures',
+        url:  '/getFeatures',
         data: {
             left: $('input[name="left"]').val(),
             right:$('input[name="right"]').val(),
+            expt: $('select[name="expt"]').val()
         },
         type:"GET",
         dataType:"json",
@@ -131,6 +131,7 @@ function initializePage(canvasName) {
         });
     updateAjax();
     $(window).resize(function(){chart1.draw()});
+    $('select[name="expt"]').change(updateAjax);
 }
 
 $(function() {
