@@ -41,7 +41,7 @@ var TFBS = Glyph.extend({
 
         group.add(rect);
 
-        group.msg=this.name+' is TFBS '+' at height '+height;
+        group.msg=this.name+' is TFBS '+' at position '+this.position+' for '+this.length+ ' nt';
         group.on('mouseover', function() {
             writeMessage(this.msg);
         });
@@ -53,9 +53,11 @@ var TFBS = Glyph.extend({
             text:this.name,
             x:0,
             y:- TFBS_HEIGHT/2,
-            fontSize:10,
+            fontSize:15,
             fill:'black'
         });
+        while ( text.fontSize> 10 && text.width()>length)
+            text.fontSize-=1;
         if (this.strand=='-')
             text.offsetX(length);
 

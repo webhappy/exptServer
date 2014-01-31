@@ -2,8 +2,6 @@ from flask import Flask, url_for, render_template, request, jsonify,json
 import os
 import cPickle,time
 import csv
-from Bio import SeqIO
-from Bio.Seq import Seq
 
 app = Flask(__name__)
 
@@ -12,6 +10,14 @@ def featurePage():
     left = request.args.get('left', 0, type=int)
     right = request.args.get('right', 0, type=int)
     return json.dumps([getGenes(left,right),getPromoters(left,right),getTFBS(left,right),getExptResults(left,right),getsRNA(left,right)])
+
+@app.route('/getGeneCoords')
+def getGeneCoords():
+    gene=request.args.get('gene')
+    for  (geneID,name, strand, left_boundary, right_boundary) in genes:
+        if name.lower() == gene.lower():
+            return json.dumps([left_boundary,right_boundary])
+    return json.dumps([-1,-1])  # Did not find this gene, return [-1,-1] as error code
 
 def getExptResults (left, right):
     """
@@ -28,13 +34,16 @@ def getExptResults (left, right):
     ret={}
 
     exptResults={}
-    ret['exptNames']=['Aerobic 1', 'Aerobic 2']
-    ret['exptColors']=['blue','blue']
-    for k in range(len(EXPT_POSITIONS)):
-        if EXPT_POSITIONS[k]>=left and EXPT_POSITIONS[k]+20 <= right:
-            exptResults[EXPT_POSITIONS[k]]=[EXPT_STRAND[k]];  # Add expt results to this list
-            for expts in EXPT_RESULTS.itervalues():
-                exptResults[EXPT_POSITIONS[k]].append(expts[k])
+    ret['exptNames']=['Aerobic 1', 'Aerobic 2','Aerobic 3']
+    ret['exptColors']=['orange','blue','blue']
+    curExpt=aerobicExptData
+    for k in range(len(curExpt['pos'])):
+        curPos = curExpt['pos'][k]
+        if curPos>=left and curPos +20 <= right:
+            exptResults[curPos]=[curExpt['strand'][k]];  # Initialize a list with strand
+            exptResults[curPos].append(curExpt['replicate1'][k])
+            exptResults[curPos].append(curExpt['replicate2'][k])
+            exptResults[curPos].append(curExpt['replicate3'][k])
     ret['exptResults']=exptResults
     assert len(ret['exptNames']) == len(ret['exptColors'])  # hopefully EXPT_RESULTS also have same length at each position
     return ret
@@ -48,7 +57,7 @@ def getGenes(left, right):
     """
     ret=[]
     for  (geneID,name, strand, left_boundary, right_boundary) in genes:
-        if left_boundary>=left and right_boundary<=right:
+        if left_boundary+10<=right and right_boundary-10>=left:  # don't draw genes if only <10 bases will be rendered
             if strand=='forward':
                 strandFormatted = '+'
             else:
@@ -140,7 +149,28 @@ if __name__ == '__main__':
     TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
     sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
 
-    (EXPT_RESULTS,EXPT_POSITIONS,EXPT_STRAND)=cPickle.load(open('expt_results.txt','rb'))
+    #(EXPT_RESULTS,EXPT_POSITIONS,EXPT_STRAND)=cPickle.load(open('expt_results.txt','rb'))
+    aerobicFile=csv.reader(open('aerobic.csv','rb'))
+    header=aerobicFile.next()
+    #sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
+    aerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
+    for row in aerobicFile:
+        aerobicExptData['pos'].append(int(row[0]))
+        aerobicExptData['strand'].append(row[2])
+        aerobicExptData['replicate1'].append(float(row[3]))
+        aerobicExptData['replicate2'].append(float(row[4]))
+        aerobicExptData['replicate3'].append(float(row[5]))
+
+    anaerobicFile=csv.reader(open('anaerobic.csv','rb'))
+    header=anaerobicFile.next()
+    #sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
+    anaerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
+    for row in anaerobicFile:
+        anaerobicExptData['pos'].append(int(row[0]))
+        anaerobicExptData['strand'].append(row[2])
+        anaerobicExptData['replicate1'].append(float(row[3]))
+        anaerobicExptData['replicate2'].append(float(row[4]))
+        anaerobicExptData['replicate3'].append(float(row[5]))
 
     end=time.clock()
     app.run(extra_files=extra_files)

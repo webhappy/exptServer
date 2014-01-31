@@ -18,6 +18,7 @@ var initAdjXPos;
 var actualOffset;
 var dragDisplayLayer;
 var dragDisplayRect;
+DRAWINGS_HEIGHT=300;
 function startDrag (mouseX,mouseY,which) {
     if (which>1){ //not a left-click, cancel everything
         dragDisplayRect.setVisible(false);
@@ -30,7 +31,7 @@ function startDrag (mouseX,mouseY,which) {
         var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
         initAdjXPos=adjXPos;
         initCoords=Math.round(adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min);
-        chart1.text.setText('starting drag ');
+        chart1.text.setText('Drag to zoom');
         chart1.messageLayer.draw();
         dragDisplayRect.setVisible(true);
         dragDisplayRect.setX(adjXPos);
@@ -43,7 +44,7 @@ function checkDrag (mouseX,mouseY) {
     if (isDragging) {
         var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
         var currentCoords=adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min;
-        chart1.text.setText('moving to '+adjXPos+', coords='+currentCoords);
+        chart1.text.setText('Zooming from '+chart1.getTickText(initCoords)+' to '+chart1.getTickText(currentCoords));
         chart1.messageLayer.draw();
         dragDisplayRect.setWidth(adjXPos-initAdjXPos);
         dragDisplayLayer.draw();
@@ -52,36 +53,32 @@ function checkDrag (mouseX,mouseY) {
 
 function stopDrag (mouseX,mouseY) {
     if (isDragging) {
+        isDragging=false;
         var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
+        if (Math.abs(adjXPos-initAdjXPos) < 100 )
+        {
+            chart1.text.setText('Canceling zoom (select wider region)');
+            chart1.messageLayer.draw();
+            dragDisplayRect.setVisible(false);
+            dragDisplayLayer.draw();
+            return;
+        }
         var currentCoords=adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min;
         chart1.text.setText('Finished to '+adjXPos+', coords='+currentCoords);
         chart1.messageLayer.draw();
+        if (initAdjXPos > adjXPos){//We dragged from right to left
+            var t=initCoords;
+            initCoords=currentCoords;
+            currentCoords=t;
+        }
         dragDisplayRect.setWidth(adjXPos-initAdjXPos);
         dragDisplayLayer.draw();
 
         $('input[name="left"]').val(Math.round(initCoords));
         $('input[name="right"]').val(Math.round(currentCoords));
         updateAjax();
-        isDragging=false;
     }
 }
-
-LANE_HEIGHT=50;
-DRAWINGS_HEIGHT=300;
- // globals
-// if (SCRIBL == undefined) {
-    var SCRIBL = {};
-    SCRIBL.chars = {};                                    
-    SCRIBL.chars.nt_color = 'white';
-    SCRIBL.chars.nt_A_bg = 'red';
-    SCRIBL.chars.nt_G_bg = 'blue';
-    SCRIBL.chars.nt_C_bg = 'green';
-    SCRIBL.chars.nt_T_bg = 'black';
-    SCRIBL.chars.nt_N_bg = 'purple';
-    SCRIBL.chars.nt_dash_bg = 'rgb(120,120,120)';
-    SCRIBL.chars.heights = [];
-    SCRIBL.chars.canvasHolder = document.createElement('canvas');      
- //}
 
 var Scribl = Class.extend({
 
@@ -106,7 +103,6 @@ var Scribl = Class.extend({
         // chart defaults
         this.width = window.innerWidth - 80;
         this.uid = _uniqueId('chart');
-        this.laneSizes = LANE_HEIGHT;
         this.laneBuffer = 5;
         this.trackBuffer = 25;
         this.offset = undefined;
@@ -390,22 +386,8 @@ var Scribl = Class.extend({
             this.addFeature(features[i]);
     },
 
-    /** **addGene**
-
-     * _syntactic sugar function to add a feature with the gene type_
-
-     * @param {Int} position - start position of the feature
-     * @param {Int} length - length of the feature
-     * @param {String} strand - '+' or '-' strand
-     * @param {Hash} [opts] - optional hash of options that can be applied to feature
-     * @return {Object} feature - a feature with the 'feature' type
-     * @api public
-     */
-    addGene: function (position, length, strand, opts) {
-        var gene=new BlockArrow(this,'gene', position, length, strand, opts);
-        return (this.addFeature(
-            gene
-        ));
+    addGene: function (position, length, strand, name) {
+        return this.featureTrack.addGene(position, length,name, strand);
     },
 
     /** **addFeature**
@@ -585,7 +567,7 @@ var Scribl = Class.extend({
         y: 10,
         fontFamily: 'Calibri',
         fontSize: 24,
-        text: 'default',
+        text: '',
         fill: 'black'
       });
         messageLayer.add(this.text);
@@ -613,12 +595,20 @@ var Scribl = Class.extend({
         this.stage.add(resultsLayer);
 
         dragDisplayLayer = new Kinetic.Layer({});
-        dragDisplayRect=new Kinetic.Rect({visible:false,height:450,y:50,width:10,x:0,stroke:'purple'});
+        dragDisplayRect=new Kinetic.Rect({visible:false,height:490,y:50,width:10,x:0,stroke:'purple'});
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
         $('#container').mousedown(function(evt) {startDrag(evt.pageX,evt.pageY,evt.which);});
         $('#container').mousemove(function(evt) {checkDrag(evt.pageX,evt.pageY);});
         $('#container').mouseup(function(evt) {stopDrag(evt.pageX,evt.pageY);});
+        $('input[name="left"]').keypress(function(evt){
+            if (evt.which==13)
+                updateAjax();
+        });
+        $('input[name="right"]').keypress(function(evt){
+            if (evt.which==13)
+                updateAjax();
+        });
    },
 
     /**
@@ -679,27 +669,22 @@ var Scribl = Class.extend({
     */
 	drawScale: function(layer){
       var firstMinorTick;
-      //var ctx = this.ctx;
-      //var fillStyleRevert = ctx.fillStyle;
-      
+
       // determine tick vertical sizes and vertical tick positions
       var tickStartPos = this.scale.font.size + this.scale.size;
       var majorTickEndPos = this.scale.font.size + 2;
       var minorTickEndPos = this.scale.font.size + this.scale.size * 0.66;
       var halfTickEndPos = this.scale.font.size + this.scale.size * 0.33;
+//      tickStartPos=-1*tickStartPos;
+//      majorTickEndPos=-1*majorTickEndPos;
+//        minorTickEndPos=-1*minorTickEndPos;
+//        halfTickEndPos=-1*halfTickEndPos;
       
-      // set scale defaults
-      //ctx.font = this.scale.font.size + 'px arial';
-      //ctx.textBaseline = 'top';
-      //ctx.fillStyle = this.scale.font.color;
-      
-      //if (this.offset == undefined)
-      //   this.offset = Math.ceil( ctx.measureText('0').width/2 + 10 );
-      this.offset=20; //Figure this out later
+      this.offset=new Kinetic.Text({text:this.getTickText(this.scale.min)}).width()/2;
 
       // determine the place to start first minor tick
       if (this.scale.min % this.tick.minor.size == 0)
-         firstMinorTick = this.scale.min
+         firstMinorTick = this.scale.min;
       else
          firstMinorTick = this.scale.min - (this.scale.min % this.tick.minor.size) 
             + this.tick.minor.size;
@@ -712,7 +697,7 @@ var Scribl = Class.extend({
             // create text
             var tickText = this.getTickText(i);
             //ctx.textAlign = 'center';
-             var textObj = new Kinetic.Text({text: tickText, x: curr_pos, y: 0, fill: 'black'});
+             var textObj = new Kinetic.Text({text: tickText, x: curr_pos, y: 0, fill: 'black',offsetY:-tickStartPos-5});
              layer.add(textObj);
              textObj.offsetX(textObj.width() / 2);
             //ctx.fillText( tickText , curr_pos, 0 );
@@ -907,11 +892,12 @@ var Scribl = Class.extend({
    
     * _abbreviates tick text numbers using 'k', or 'm' (e.g. 10000 becomes 10k)_
    
-    * @param {Int} tickNumber - the tick number that needs to be abbreviated
+    * @param {Number} tickNumber - the tick number that needs to be abbreviated
     * @return {String} abbreviated tickNumber
     * @api internal
     */
 	getTickText: function(tickNumber) {
+       tickNumber = Math.round(tickNumber);
       if ( !this.tick.auto )
          return tickNumber;
 		
@@ -1078,3 +1064,17 @@ var Scribl = Class.extend({
 	
 	
 });
+ // globals
+// if (SCRIBL == undefined) {
+    var SCRIBL = {};
+    SCRIBL.chars = {};
+    SCRIBL.chars.nt_color = 'white';
+    SCRIBL.chars.nt_A_bg = 'red';
+    SCRIBL.chars.nt_G_bg = 'blue';
+    SCRIBL.chars.nt_C_bg = 'green';
+    SCRIBL.chars.nt_T_bg = 'black';
+    SCRIBL.chars.nt_N_bg = 'purple';
+    SCRIBL.chars.nt_dash_bg = 'rgb(120,120,120)';
+    SCRIBL.chars.heights = [];
+    SCRIBL.chars.canvasHolder = document.createElement('canvas');
+ //}

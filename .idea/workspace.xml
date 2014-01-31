@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="275ec63d-d175-4246-9a4d-43fe0168d7a0" name="Default" comment="" />
+    <list default="true" id="275ec63d-d175-4246-9a4d-43fe0168d7a0" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/src/FeatureTrack.js" afterPath="$PROJECT_DIR$/static/src/FeatureTrack.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js" afterPath="$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/src/Scribl.js" afterPath="$PROJECT_DIR$/static/src/Scribl.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/src/glyph/TFBS.js" afterPath="$PROJECT_DIR$/static/src/glyph/TFBS.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/src/ajaxHandler.js" afterPath="$PROJECT_DIR$/static/src/ajaxHandler.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/exptServer.py" afterPath="$PROJECT_DIR$/exptServer.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/simple.html" afterPath="$PROJECT_DIR$/templates/simple.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
     <ignored path="exptServer.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -12,16 +21,16 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/exptServer$testParseExptData.coverage" NAME="testParseExptData Coverage Results" MODIFIED="1390775753066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
-    <SUITE FILE_PATH="coverage/exptServer$timePickle.coverage" NAME="timePickle Coverage Results" MODIFIED="1390610461990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
-    <SUITE FILE_PATH="coverage/exptServer$readFiles.coverage" NAME="convert Promoters Coverage Results" MODIFIED="1390694384675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
     <SUITE FILE_PATH="coverage/exptServer$convertsRNA.coverage" NAME="convertsRNA Coverage Results" MODIFIED="1390967008990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
-    <SUITE FILE_PATH="coverage/exptServer$convert_Promoters.coverage" NAME="convert Promoters Coverage Results" MODIFIED="1390971753099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
+    <SUITE FILE_PATH="coverage/exptServer$readFiles.coverage" NAME="convert Promoters Coverage Results" MODIFIED="1390694384675" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
+    <SUITE FILE_PATH="coverage/exptServer$timePickle.coverage" NAME="timePickle Coverage Results" MODIFIED="1390610461990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
+    <SUITE FILE_PATH="coverage/exptServer$testParseExptData.coverage" NAME="testParseExptData Coverage Results" MODIFIED="1390775753066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
     <SUITE FILE_PATH="coverage/exptServer$exptServer.coverage" NAME="exptServer Coverage Results" MODIFIED="1390958559005" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/exptServer$convert_Promoters.coverage" NAME="convert Promoters Coverage Results" MODIFIED="1390971753099" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
     <SUITE FILE_PATH="coverage/exptServer$convertGenesToPickled.coverage" NAME="convertGenesToPickled Coverage Results" MODIFIED="1390624217873" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
     <SUITE FILE_PATH="coverage/exptServer$Unnamed.coverage" NAME="Unnamed Coverage Results" MODIFIED="1390538916459" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/exptServer$loadFeatures.coverage" NAME="loadFeatures Coverage Results" MODIFIED="1390616843320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
     <SUITE FILE_PATH="coverage/exptServer$convertTFBS.coverage" NAME="convertTFBS Coverage Results" MODIFIED="1390694428239" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
+    <SUITE FILE_PATH="coverage/exptServer$loadFeatures.coverage" NAME="loadFeatures Coverage Results" MODIFIED="1390616843320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../parseRegulonDB" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -40,10 +49,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Scribl.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="Scribl.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/src/Scribl.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="522" column="4" selection-start="17047" selection-end="17047" vertical-scroll-proportion="0.33407325" vertical-offset="8573" max-vertical-offset="17374">
+            <state line="110" column="0" selection-start="3467" selection-end="3467" vertical-scroll-proportion="0.0" vertical-offset="1462" max-vertical-offset="18462">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="kinetic-v5.0.1.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/src/kinetic-v5.0.1.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="316" column="8" selection-start="15580" selection-end="15580" vertical-scroll-proportion="0.0" vertical-offset="4205" max-vertical-offset="234991">
               <folding />
             </state>
           </provider>
@@ -52,19 +70,8 @@
       <file leaf-file-name="ajaxHandler.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/src/ajaxHandler.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="83" column="0" selection-start="3007" selection-end="3007" vertical-scroll-proportion="0.0" vertical-offset="950" max-vertical-offset="1870">
+            <state line="91" column="12" selection-start="3196" selection-end="3196" vertical-scroll-proportion="0.0" vertical-offset="782" max-vertical-offset="2431">
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="convertPromoterFromSQLToPickled.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../parseRegulonDB/convertPromoterFromSQLToPickled.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="84" selection-start="1776" selection-end="1776" vertical-scroll-proportion="0.0" vertical-offset="82" max-vertical-offset="969">
-              <folding>
-                <marker date="1390969421000" expanded="true" signature="303:410" placeholder="SELECT promo..." />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -72,8 +79,11 @@
       <file leaf-file-name="simple.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/templates/simple.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="86" selection-start="3077" selection-end="3077" vertical-scroll-proportion="-26.615385" vertical-offset="90" max-vertical-offset="1054">
-              <folding />
+            <state line="39" column="33" selection-start="2867" selection-end="2867" vertical-scroll-proportion="-25.5" vertical-offset="0" max-vertical-offset="1037">
+              <folding>
+                <element signature="n#style#0;n#span#0;n#p#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -81,45 +91,34 @@
       <file leaf-file-name="FeatureTrack.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/src/FeatureTrack.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="7" selection-start="452" selection-end="452" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3298">
+            <state line="93" column="40" selection-start="3298" selection-end="3298" vertical-scroll-proportion="0.0" vertical-offset="1382" max-vertical-offset="3077">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="exptServer.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/exptServer.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="38" column="0" selection-start="1444" selection-end="1444" vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="2567">
-              <folding>
-                <element signature="e#0#72#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Scribl.blockarrow.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="Scribl.blockarrow.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="0" selection-start="1772" selection-end="1772" vertical-scroll-proportion="0.0" vertical-offset="536" max-vertical-offset="1445">
+            <state line="55" column="33" selection-start="1846" selection-end="1846" vertical-scroll-proportion="0.7552534" vertical-offset="324" max-vertical-offset="1666">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Scribl.glyph.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/src/Scribl.glyph.js">
+      <file leaf-file-name="Scribl.class.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/src/Scribl.class.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="31" column="27" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0" vertical-offset="527" max-vertical-offset="9996">
+            <state line="54" column="0" selection-start="1596" selection-end="1596" vertical-scroll-proportion="0.0" vertical-offset="392" max-vertical-offset="1258">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Promoter.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/static/src/glyph/Promoter.js">
+      <file leaf-file-name="Scribl.lane.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/static/src/Scribl.lane.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="136" column="19" selection-start="3701" selection-end="3701" vertical-scroll-proportion="0.0" vertical-offset="1736" max-vertical-offset="2652">
+            <state line="158" column="0" selection-start="4467" selection-end="4467" vertical-scroll-proportion="0.0" vertical-offset="2398" max-vertical-offset="3332">
               <folding />
             </state>
           </provider>
@@ -128,7 +127,7 @@
       <file leaf-file-name="TFBS.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/static/src/glyph/TFBS.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="45" column="32" selection-start="1137" selection-end="1137" vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="1190">
+            <state line="23" column="21" selection-start="584" selection-end="584" vertical-scroll-proportion="0.0" vertical-offset="35" max-vertical-offset="1190">
               <folding />
             </state>
           </provider>
@@ -140,6 +139,19 @@
     <FindUsagesManager>
       <setting name="OPEN_NEW_TAB" value="false" />
     </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="DC" />
+      </list>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
   </component>
   <component name="GitLogSettings">
     <option name="myDateState">
@@ -153,18 +165,18 @@
         <option value="$PROJECT_DIR$/static/src/kinetic-v5.0.1.js" />
         <option value="$PROJECT_DIR$/static/src/Scribl.track.js" />
         <option value="$PROJECT_DIR$/static/src/Scribl.glyph.js" />
-        <option value="$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js" />
         <option value="$PROJECT_DIR$/static/src/Scribl.lane.js" />
         <option value="$PROJECT_DIR$/../parseRegulonDB/convertsRNA.py" />
         <option value="$PROJECT_DIR$/static/src/glyph/Promoter.js" />
         <option value="$PROJECT_DIR$/../parseRegulonDB/convertPromoterFromSQLToPickled.py" />
-        <option value="$PROJECT_DIR$/static/src/glyph/TFBS.js" />
         <option value="$PROJECT_DIR$/../parseRegulonDB/testParseExptData.py" />
-        <option value="$PROJECT_DIR$/static/src/Scribl.js" />
-        <option value="$PROJECT_DIR$/static/src/ajaxHandler.js" />
         <option value="$PROJECT_DIR$/exptServer.py" />
-        <option value="$PROJECT_DIR$/static/src/FeatureTrack.js" />
         <option value="$PROJECT_DIR$/templates/simple.html" />
+        <option value="$PROJECT_DIR$/static/src/ajaxHandler.js" />
+        <option value="$PROJECT_DIR$/static/src/Scribl.js" />
+        <option value="$PROJECT_DIR$/static/src/FeatureTrack.js" />
+        <option value="$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js" />
+        <option value="$PROJECT_DIR$/static/src/glyph/TFBS.js" />
       </list>
     </option>
   </component>
@@ -219,23 +231,12 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="exptServer" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="exptServer" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="parseRegulonDB" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -318,21 +319,22 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="GoToFile.includeJavaFiles" value="false" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="options.lastSelected" value="preferences.keymap" />
     <property name="recentsLimit" value="5" />
-    <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
-    <property name="restartRequiresConfirmation" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="FullScreen" value="false" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
-    <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="options.searchVisible" value="true" />
     <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -562,9 +564,6 @@
       <option name="CONFIGURATION_FILE" value="" />
       <method />
     </configuration>
-    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
-      <method />
-    </configuration>
     <configuration default="true" type="tests" factoryName="Unittests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -586,6 +585,9 @@
       <option name="PUREUNITTEST" value="true" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
@@ -708,24 +710,30 @@
       <created>1390536958121</created>
       <updated>1390536958121</updated>
     </task>
+    <task id="LOCAL-00001" summary="Added zoom-in by dragging functionality">
+      <created>1391063678029</created>
+      <updated>1391063678029</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="868" y="22" width="1669" height="1346" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3298639" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933652" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298887" sideWeight="0.60191846" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2267406" sideWeight="0.77298164" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26494145" sideWeight="0.7726181" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2273819" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32746196" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28422737" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30535573" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298639" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3298639" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2267406" sideWeight="0.6701361" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.26802218" sideWeight="0.6701361" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32933652" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -741,6 +749,8 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
+    <MESSAGE value="Added zoom-in by dragging functionality" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added zoom-in by dragging functionality" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -751,124 +761,138 @@
           <line>15</line>
           <option name="timeStamp" value="76" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js</url>
+          <line>20</line>
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/exptServer.py</url>
+          <line>41</line>
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="88" />
+      <option name="time" value="95" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/static/src/Scribl.class.js">
+    <entry file="file://$PROJECT_DIR$/../parseRegulonDB/convertsRNA.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="55" column="0" selection-start="1638" selection-end="1638" vertical-scroll-proportion="0.0" vertical-offset="342" max-vertical-offset="1258" />
+        <state line="12" column="19" selection-start="513" selection-end="513" vertical-scroll-proportion="0.2632258" vertical-offset="0" max-vertical-offset="775" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/kinetic-v5.0.1.js">
+    <entry file="file://$PROJECT_DIR$/../parseRegulonDB/testParseExptData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="316" column="8" selection-start="15580" selection-end="15580" vertical-scroll-proportion="0.0" vertical-offset="5088" max-vertical-offset="235433">
+        <state line="21" column="25" selection-start="689" selection-end="689" vertical-scroll-proportion="0.19503947" vertical-offset="133" max-vertical-offset="1020" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../parseRegulonDB/convertPromoterFromSQLToPickled.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="45" column="84" selection-start="1776" selection-end="1776" vertical-scroll-proportion="0.61018366" vertical-offset="0" max-vertical-offset="1198">
           <folding>
-            <element signature="n#!!doc" expanded="false" />
+            <marker date="1390969421000" expanded="true" signature="-1:-1" placeholder="SELECT promo..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/jquery-2.1.0.js">
+    <entry file="file://$PROJECT_DIR$/static/src/glyph/Promoter.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="1226" column="0" selection-start="33273" selection-end="33273" vertical-scroll-proportion="0.0" vertical-offset="20337" max-vertical-offset="154785">
+        <state line="111" column="33" selection-start="3037" selection-end="3037" vertical-scroll-proportion="0.46958378" vertical-offset="1447" max-vertical-offset="2652">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/src/Scribl.glyph.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="125" column="63" selection-start="4190" selection-end="4190" vertical-scroll-proportion="0.41666666" vertical-offset="1740" max-vertical-offset="9996">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Aerobic.csv">
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="50" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="146523">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/src/Scribl.lane.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="84" column="4" selection-start="2528" selection-end="2528" vertical-scroll-proportion="0.0" vertical-offset="1132" max-vertical-offset="3332">
+        <state line="158" column="0" selection-start="4467" selection-end="4467" vertical-scroll-proportion="0.0" vertical-offset="2398" max-vertical-offset="3332">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../parseRegulonDB/convertsRNA.py">
+    <entry file="file://$PROJECT_DIR$/static/src/kinetic-v5.0.1.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="19" selection-start="513" selection-end="513" vertical-scroll-proportion="0.2632258" vertical-offset="0" max-vertical-offset="775" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/Scribl.glyph.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="31" column="27" selection-start="943" selection-end="943" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="9996">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../parseRegulonDB/convertPromoterFromSQLToPickled.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="84" selection-start="1776" selection-end="1776" vertical-scroll-proportion="0.0" vertical-offset="82" max-vertical-offset="969">
-          <folding>
-            <marker date="1390969421000" expanded="true" signature="303:410" placeholder="SELECT promo..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/glyph/TFBS.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="32" selection-start="1137" selection-end="1137" vertical-scroll-proportion="0.0" vertical-offset="256" max-vertical-offset="1190">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../parseRegulonDB/testParseExptData.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="21" column="25" selection-start="689" selection-end="689" vertical-scroll-proportion="0.19503947" vertical-offset="133" max-vertical-offset="1020">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/glyph/Promoter.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="136" column="19" selection-start="3701" selection-end="3701" vertical-scroll-proportion="0.0" vertical-offset="1736" max-vertical-offset="2652">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="0" selection-start="1772" selection-end="1772" vertical-scroll-proportion="0.0" vertical-offset="542" max-vertical-offset="1445">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/exptServer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="0" selection-start="1444" selection-end="1444" vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="2567">
-          <folding>
-            <element signature="e#0#72#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/ajaxHandler.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="83" column="0" selection-start="3007" selection-end="3007" vertical-scroll-proportion="0.0" vertical-offset="950" max-vertical-offset="1870">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/static/src/FeatureTrack.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="7" selection-start="452" selection-end="452" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3298">
+        <state line="316" column="8" selection-start="15580" selection-end="15580" vertical-scroll-proportion="0.0" vertical-offset="4528" max-vertical-offset="234991">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/simple.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="86" selection-start="3077" selection-end="3077" vertical-scroll-proportion="-26.615385" vertical-offset="90" max-vertical-offset="1054">
+        <state line="39" column="33" selection-start="2867" selection-end="2867" vertical-scroll-proportion="-25.5" vertical-offset="0" max-vertical-offset="1037">
+          <folding>
+            <element signature="n#style#0;n#span#0;n#p#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#1;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/src/ajaxHandler.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="91" column="12" selection-start="3196" selection-end="3196" vertical-scroll-proportion="0.0" vertical-offset="782" max-vertical-offset="2431">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/static/src/Scribl.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="522" column="4" selection-start="17047" selection-end="17047" vertical-scroll-proportion="0.33407325" vertical-offset="8573" max-vertical-offset="17374">
+        <state line="110" column="0" selection-start="3467" selection-end="3467" vertical-scroll-proportion="0.0" vertical-offset="1462" max-vertical-offset="18462">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/src/Scribl.class.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="0" selection-start="1596" selection-end="1596" vertical-scroll-proportion="0.0" vertical-offset="392" max-vertical-offset="1258">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/exptServer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="53" column="17" selection-start="2127" selection-end="2127" vertical-scroll-proportion="0.47113165" vertical-offset="493" max-vertical-offset="3077">
+          <folding>
+            <element signature="e#0#72#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/src/FeatureTrack.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="93" column="40" selection-start="3298" selection-end="3298" vertical-scroll-proportion="0.0" vertical-offset="1382" max-vertical-offset="3077">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/src/glyph/TFBS.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="23" column="21" selection-start="584" selection-end="584" vertical-scroll-proportion="0.0" vertical-offset="35" max-vertical-offset="1190">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/static/src/glyph/Scribl.blockarrow.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="55" column="33" selection-start="1846" selection-end="1846" vertical-scroll-proportion="0.7552534" vertical-offset="324" max-vertical-offset="1666">
           <folding />
         </state>
       </provider>

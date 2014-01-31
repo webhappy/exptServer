@@ -37,14 +37,13 @@
 </style>
     </head>
 	
-	<body onload="draw('canvas')">
+	<body onload="initializePage('canvas')">
 
      <div id="slider" class="contentHolder">
     </div>
+       <p>Left: <input type=text size=7 name=left value="1489194">Right: <input type=text size=7 name=right value="1490630"><a href=# id=fetch>Refresh</a>
+<span style="float:right">Gene to zoom to: <input type="text" size="6" name="gene"></span>
 
-
-    <p>Left: <input type=text size=7 name=left value="851735">
-   Right: <input type=text size=7 name=right value="853370"><a href=# id=fetch>Refresh</a>
 		<div id="container" style="position:relative; left:0px">
 			<canvas id="canvas" width="350" height="630" ></canvas>
 			</br><a id="export">Export as PNG (right click Save As)</a>
