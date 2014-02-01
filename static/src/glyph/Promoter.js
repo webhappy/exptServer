@@ -54,6 +54,7 @@ var sRNA = Glyph.extend({
             fontSize:14,
             fill:'black'
         });
+        text.offsetX(text.width()/2);
         if (this.strand=='-')
             text.offsetX(length);
 
@@ -142,7 +143,7 @@ var Promoter = Glyph.extend({
     if (this.strand=='-')
         text.offsetX(length+5);
     else
-        text.offsetX(length-20);
+        text.offsetX(length-text.width()/2);
 
 
      group.add(text);

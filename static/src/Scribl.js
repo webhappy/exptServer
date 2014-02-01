@@ -12,6 +12,16 @@ function writeMessage (message) {
     chart1.messageLayer.draw();
 }
 
+//From stackoverflow: http://stackoverflow.com/questions/14075014/jquery-function-to-to-format-number-with-commas-and-decimal
+function replaceNumberWithCommas(yourNumber) {
+    //Seperates the components of the number
+    var n= yourNumber.toString().split(".");
+    //Comma-fies the first part
+    n[0] = n[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    //Combines the two sections
+    return n.join(".");
+}
+
 var isDragging=false;
 var initCoords= 0, currentCoords = 0;
 var initAdjXPos;
@@ -706,7 +716,7 @@ var Scribl = Class.extend({
                    newLine=new Kinetic.Line({points: [curr_pos, tickStartPos, curr_pos, minorTickEndPos], stroke: this.tick.minor.color});
                }
             }
-          newLine.msg=i;
+          newLine.msg='Chromosome location: '+replaceNumberWithCommas(i);
           newLine.on('mouseover', function() {
             writeMessage(this.msg);
           });
