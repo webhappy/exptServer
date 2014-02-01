@@ -599,41 +599,6 @@ var Scribl = Class.extend({
         dragDisplayRect=new Kinetic.Rect({visible:false,height:490,y:50,width:10,x:0,stroke:'purple'});
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
-        $('#container').mousedown(function(evt) {startDrag(evt.pageX,evt.pageY,evt.which);});
-        $('#container').mousemove(function(evt) {checkDrag(evt.pageX,evt.pageY);});
-        $('#container').mouseup(function(evt) {stopDrag(evt.pageX,evt.pageY);});
-        $('input[name="left"]').keypress(function(evt){
-            if (evt.which==13)
-                updateAjax();
-        });
-        $('input[name="right"]').keypress(function(evt){
-            if (evt.which==13)
-                updateAjax();
-        });
-        $('#container').mousewheel(function(event,delta) {
-            if ( lastScrollTime && (new Date().getTime()-lastScrollTime) <150 )
-            { return;} //abort if we just scrolled
-            if (delta > 0) {
-                //zoom out
-                var factor=200;//Math.max(100,Math.round(.01*chart1.scale.min));
-                //factor=Math.min(factor,500);
-                  var newLeft=chart1.scale.min-factor;
-                  var newRight=chart1.scale.max+factor;
-            }else {
-                //zoom in
-                var factor=-200;//Math.max(100,Math.round(.01*chart1.scale.min));
-                //factor=Math.min(factor,500);
-                  var newLeft=chart1.scale.min-factor;
-                  var newRight=chart1.scale.max+factor;
-            }
-            if (newRight-newLeft < 100) {
-                return;
-            }
-            $('input[name="left"]').val(newLeft);
-                $('input[name="right"]').val(newRight);
-                updateAjax();
-                lastScrollTime=new Date().getTime();
-        });
    },
 
     /**
@@ -716,7 +681,7 @@ var Scribl = Class.extend({
  		    
       // draw
       for(var i = firstMinorTick; i <= this.scale.max; i += this.tick.minor.size){		    
-         //ctx.beginPath();
+          var newLine;
          var curr_pos = this.convertNtsToPixels(i - this.scale.min) + this.offset;
          if ( i % this.tick.major.size == 0) { // draw major tick
             // create text
@@ -725,33 +690,32 @@ var Scribl = Class.extend({
              var textObj = new Kinetic.Text({text: tickText, x: curr_pos, y: 0, fill: 'black',offsetY:-tickStartPos-5});
              layer.add(textObj);
              textObj.offsetX(textObj.width() / 2);
-            //ctx.fillText( tickText , curr_pos, 0 );
-
-            // create major tick
-            //ctx.moveTo( curr_pos, tickStartPos );
-            //ctx.lineTo( curr_pos, majorTickEndPos );
-            //ctx.strokeStyle = this.tick.major.color;
-            //ctx.stroke();
-            layer.add(new Kinetic.Line({points:[curr_pos,tickStartPos,curr_pos,majorTickEndPos],stroke:this.tick.major.color}));
+             newLine=new Kinetic.Line({points:[curr_pos,tickStartPos,curr_pos,majorTickEndPos],stroke:this.tick.major.color});
 
             } else { // draw minor tick
 //               ctx.moveTo( curr_pos, tickStartPos );
 
                // create half tick - tick between two major ticks
                if ( i % (this.tick.major.size/2) == 0 ) {
-                   layer.add(new Kinetic.Line({points: [curr_pos, tickStartPos, curr_pos, halfTickEndPos], stroke: this.tick.halfColor}));
+                   newLine=new Kinetic.Line({points: [curr_pos, tickStartPos, curr_pos, halfTickEndPos], stroke: this.tick.halfColor});
   //                ctx.strokeStyle = this.tick.halfColor;
    //               ctx.lineTo( curr_pos, halfTickEndPos );
                }
                // create minor tick
                else{
-                   layer.add(new Kinetic.Line({points: [curr_pos, tickStartPos, curr_pos, minorTickEndPos], stroke: this.tick.minor.color}));
-     //             ctx.strokeStyle = this.tick.minor.color;
-      //            ctx.lineTo( curr_pos, minorTickEndPos );
+                   newLine=new Kinetic.Line({points: [curr_pos, tickStartPos, curr_pos, minorTickEndPos], stroke: this.tick.minor.color});
                }
-//               ctx.stroke();
-            }            
+            }
+          newLine.msg=i;
+          newLine.on('mouseover', function() {
+            writeMessage(this.msg);
+          });
+          newLine.on('mouseout', function() {
+            writeMessage('');
+          });
+          layer.add(newLine);
          }
+
                            
          // restore fillstyle
   //       ctx.fillStyle = fillStyleRevert;

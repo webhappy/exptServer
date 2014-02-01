@@ -100,8 +100,9 @@ function getCoordsByAJAX (gene) {
             var right=json[1];
             left-=200;
             right+=200;
-            if (left==-1) {
-                alert('Coords for gene '+gene+' could not be located.');
+            if (left<0) {
+                writeMessage('Coords for gene '+gene+' could not be located.');
+                //alert('Coords for gene '+gene+' could not be located.');
                 return
             } else {
                 $('input[name="left"]').val(left);
@@ -124,14 +125,56 @@ function initializePage(canvasName) {
 
     $('#slider').noUiSlider({range:[0, MAX_NT_SLIDER],start:[2250,2750],handles:2,connect:true,behaviour:'drag',set:updateAjax,slide:updateRanges});
     $('input[name="gene"]').keypress(function(evt){
-            if (evt.which==13)
+            if (evt.which==13) {
                 getCoordsByAJAX($('input[name="gene"]').val());
+                $('#geneInput').blur();
+            }
         });
     $('input[name="gene"]').blur(function(evt){getCoordsByAJAX($('input[name="gene"]').val());
         });
     updateAjax();
     $(window).resize(function(){chart1.draw()});
     $('select[name="expt"]').change(updateAjax);
+
+      $('#container').mousedown(function(evt) {startDrag(evt.pageX,evt.pageY,evt.which);});
+        $('#container').mousemove(function(evt) {checkDrag(evt.pageX,evt.pageY);});
+        $('#container').mouseup(function(evt) {stopDrag(evt.pageX,evt.pageY);});
+        $('input[name="left"]').keypress(function(evt){
+            if (evt.which==13){
+                updateAjax();
+                $('input[name="left"]').blur();
+            }
+        });
+        $('input[name="right"]').keypress(function(evt){
+            if (evt.which==13) {
+                updateAjax();
+                $('input[name="right"]').blur();
+            }
+        });
+        $('#container').mousewheel(function(event,delta) {
+            if ( lastScrollTime && (new Date().getTime()-lastScrollTime) <150 )
+            { return;} //abort if we just scrolled
+            if (delta > 0) {
+                //zoom out
+                var factor=200;//Math.max(100,Math.round(.01*chart1.scale.min));
+                //factor=Math.min(factor,500);
+                  var newLeft=chart1.scale.min-factor;
+                  var newRight=chart1.scale.max+factor;
+            }else {
+                //zoom in
+                var factor=-200;//Math.max(100,Math.round(.01*chart1.scale.min));
+                //factor=Math.min(factor,500);
+                  var newLeft=chart1.scale.min-factor;
+                  var newRight=chart1.scale.max+factor;
+            }
+            if (newRight-newLeft < 100) {
+                return;
+            }
+            $('input[name="left"]').val(newLeft);
+                $('input[name="right"]').val(newRight);
+                updateAjax();
+                lastScrollTime=new Date().getTime();
+        });
 }
 
 $(function() {

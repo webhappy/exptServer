@@ -117,7 +117,7 @@ var Promoter = Glyph.extend({
             promoterGroup.add(arrowHead);
         if (this.strand=='-') {
             promoterGroup.scale({x:-1,y:1});
-            //poly.offsetX(length);
+           // promoterGroup.offsetX(length);
          }
 
         group.add(promoterGroup);
