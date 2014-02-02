@@ -2,13 +2,18 @@
  * Created by davidc on 1/24/14.
  */
 var MAX_NT_SLIDER=10000;
+var waitingForAJAX=false;
 function updateRanges () {
     var vals = $('#slider').val();
     $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])));
     $('input[name="right"]').val(Math.round(chart1.ntOffset+Math.round(vals[1])));
 
-    if (  (new Date().getTime()-lastScrollTime) >500 )
+    var curTime = new Date().getTime();
+    if (  !waitingForAJAX  && (curTime-lastScrollTime) >100  ) {//&& (curTime-lastScrollTime) < 1000
+        waitingForAJAX=true;
         updateAjax(true);
+        lastScrollTime=curTime;
+    }
 }
 
 function updateAjax(doNotModifySlider) {
@@ -87,6 +92,7 @@ function updateAjax(doNotModifySlider) {
                 $('#slider').val([leftVal-chart1.ntOffset,rightVal-chart1.ntOffset]);
             }
             chart1.draw();
+            waitingForAJAX=false;
         },
         error: function (xhr,status) {alert("Error getting JSON!")}
     })
