@@ -2,10 +2,9 @@
  * Created by davidc on 1/17/14.
  */
 var FeatureTrack = Lane.extend({
-    init: function(chart, geneHeight) {
+    init: function(chart) {
       // defaults
       this.items=[];
-        this.geneHeight=geneHeight;
         this.chart=chart;
         this.ctx=chart.ctx;
         this.track=[];

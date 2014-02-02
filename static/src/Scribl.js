@@ -246,7 +246,7 @@ var Scribl = Class.extend({
 
      * _Get the height of the entire Scribl chart/view_
 
-     * @return {Int} height in pixels
+     * @return {Integer} height in pixels
      * @api public
      */
     getHeight: function () {
@@ -339,67 +339,6 @@ var Scribl = Class.extend({
                 chart.tracks.splice(i, 1);
         }
         delete track;
-    },
-
-
-    /** **loadGenbank**
-
-     * _parses a genbank file and adds the features to the Scribl chart/view_
-
-     * @param {String} genbank file as a string
-     * @api public
-     */
-    loadGenbank: function (file) {
-        genbank(file, this);
-    },
-
-    /** **loadBed**
-
-     * _parses a bed file and adds the features to the Scribl chart/view_
-
-     * @param {String} bed file as a string
-     * @api public
-     */
-    loadBed: function (file) {
-        bed(file, this);
-    },
-
-    /** **loadBam**
-
-     * _parses a bam file and adds the features to the Scribl chart/view_
-
-     * @param {File} bam file as a javascript file object
-     * @param {File} bai (bam index) file as a javascript file object
-     * @param {Int} start
-     * @param {Int} end
-     * @api public
-     */
-    loadBam: function (bamFile, baiFile, chr, start, end, callback) {
-        var scribl = this;
-        // scribl.scale.min = start;
-        // scribl.scale.max = end;
-        var track = scribl.addTrack();
-        track.status = 'waiting';
-        makeBam(new BlobFetchable(bamFile),
-            new BlobFetchable(baiFile),
-            function (bam, reader) {
-                scribl.file = bam;
-                bam.fetch(chr, start, end, function (r, e) {
-                    if (r) {
-                        for (var i = 0; i < r.length; i += 1) {
-                            track.addFeature(new BlockArrow('bam', r[i].pos, r[i].lengthOnRef, '+', {'seq': r[i].seq}))
-                        }
-                        track.status = "received";
-                        if (track.drawOnResponse)
-                            scribl.redraw();
-                        //callback();
-                    }
-                    if (e) {
-                        alert('error: ' + e);
-                    }
-                });
-            });
-        return track;
     },
 
     /** **loadFeatures**
@@ -588,7 +527,7 @@ var Scribl = Class.extend({
         this.width=window.innerWidth - 80;
         this.stage = new Kinetic.Stage({container: 'container', width :this.width , height: 800});
         this.initScale();
-        var messageLayer = new Kinetic.Layer();
+        var messageLayer = new Kinetic.Layer({});
         this.messageLayer=messageLayer;
         this.text = new Kinetic.Text({
         x: 70,
@@ -616,7 +555,6 @@ var Scribl = Class.extend({
         var tracks=this.tracks;
         var featuresLayer = new Kinetic.Layer({offsetY:-DRAWINGS_HEIGHT,scaleY:1});
       // draw tracks
-        tracks[0].draw(featuresLayer);
         var resultsLayer=new Kinetic.Layer({offsetX:-this.offset, offsetY:-DRAWINGS_HEIGHT-this.getScaleHeight()});
         this.featureTrack.draw(featuresLayer,resultsLayer);
          this.stage.add(featuresLayer);
@@ -635,8 +573,8 @@ var Scribl = Class.extend({
         //this.scale.max = undefined;
         //this.scale.min = undefined;
         this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
-        this.tracks[0]=new Track(this);
-        this.featureTrack = new FeatureTrack(this, this.laneSizes);
+        //this.tracks[0]=new Track(this);
+        //this.featureTrack = new FeatureTrack(this, this.laneSizes);
     },
 
    /** **redraw**
@@ -759,7 +697,7 @@ var Scribl = Class.extend({
     * _Get the number of nucleotides per the given pixels_
    
     * @param {Integer} [nts] optional - if not given, the ratio of pixels/nts will be returned
-    * @return nucleotides or pixels/nts ratio
+    * @return {Integer} nucleotides or pixels/nts ratio
     * @api internal    
     */
 	convertNtsToPixels: function(nts) {
@@ -785,101 +723,12 @@ var Scribl = Class.extend({
       }
 
    },
-	
-	/** **initScrollable**
-   
-    * _turns static chart into scrollable chart_
-   
-    * @api internal
-    */
-	initScrollable: function() {
-      var scrollStartMin;
-	    
-      if (!this.scrolled){
-         // create divs
-         var parentDiv = document.createElement('div');
-         var canvasContainer = document.createElement('div');
-         var sliderDiv = document.createElement('div');
-         sliderDiv.id = 'scribl-zoom-slider';
-         sliderDiv.className = 'slider';
-         sliderDiv.style.cssFloat = 'left';
-         sliderDiv.style.height = (new String(this.canvas.height * .5)) + 'px';
-         sliderDiv.style.margin = '30px auto auto -20px'
-        
-         // grab css styling from canavs
-         parentDiv.style.cssText = this.canvas.style.cssText;
-         this.canvas.style.cssText = '';
-         parentWidth = parseInt(this.canvas.width) + 25;
-         parentDiv.style.width = parentWidth + 'px';
-         canvasContainer.style.width = this.canvas.width + 'px';
-         canvasContainer.style.overflow = 'auto';
-         canvasContainer.id = 'scroll-wrapper';                     
-         
-         
-         
-         this.canvas.parentNode.replaceChild(parentDiv, this.canvas);
-         parentDiv.appendChild(sliderDiv);
-         canvasContainer.appendChild(this.canvas);
-         parentDiv.appendChild(canvasContainer);
-
-         jQuery(canvasContainer).dragscrollable({dragSelector: 'canvas:first', acceptPropagatedEvent: false});      
-      }
-           
-      var totalNts =  this.scale.max - this.scale.min;
-      var scrollStartMax = this.scrollValues[1] || this.scale.max - totalNts * .35;
-      if( this.scrollValues[0] != undefined)
-          scrollStartMin = this.scrollValues[0];
-      else
-          scrollStartMin = this.scale.max + totalNts * .35;            
-
-      var viewNts = scrollStartMax - scrollStartMin;            
-      var viewNtsPerPixel = viewNts / document.getElementById('scroll-wrapper').style.width.split('px')[0];
-
-      var canvasWidth = (totalNts / viewNtsPerPixel) || 100;
-      this.canvas.width = canvasWidth;
-      this.width = canvasWidth - 30;
-      schart = this;
-      var zoomValue = (scrollStartMax - scrollStartMin) / (this.scale.max - this.scale.min) * 100 || 1;
-
-      jQuery(sliderDiv).slider({
-         orientation: 'vertical',
-         range: 'min',
-         min: 6,
-         max: 100,
-         value: zoomValue,
-         slide: function( event, ui ) {
-            var totalNts = schart.scale.max - schart.scale.min;
-            var width = ui['value'] / 100 * totalNts;
-            var widthPixels = ui['value'] / 100 * schart.canvas.width;
-            var canvasContainer = document.getElementById('scroll-wrapper');
-            var center = canvasContainer.scrollLeft + parseInt(canvasContainer.style.width.split('px')[0]) / 2;
-                    
-            // get min max pixels
-            var minPixel = center - widthPixels/2;
-            var maxPixel = center + widthPixels/2;
-            
-            // convert to nt
-            var min = schart.scale.min + (minPixel / schart.canvas.width) * totalNts;
-            var max = schart.scale.min + (maxPixel / schart.canvas.width) * totalNts;
-
-            schart.scrollValues = [min, max];
-            schart.ctx.clearRect(0, 0, schart.canvas.width, schart.canvas.height);
-            schart.draw();
-         }
-      });
-        
-
-      var startingPixel = (scrollStartMin - this.scale.min) / totalNts * this.canvas.width;        
-      document.getElementById('scroll-wrapper').scrollLeft = startingPixel;
-      this.scrolled = true;
-	},
-
 
    /** **determineMajorTick**
    
     * _intelligently determines a major tick interval based on size of the chart/view and size of the numbers on the scale_
    
-    * @return {Int} major tick interval
+    * @return {Integer} major tick interval
     * @api internal
     */
 	determineMajorTick: function() {
