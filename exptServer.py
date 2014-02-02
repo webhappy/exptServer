@@ -101,7 +101,7 @@ def getGenes(left, right):
 def getPromoters(left, right):
     ret=[]
     for (id, name, strand, TSS, seq, left_boundary, right_boundary) in promoters:
-        if left_boundary>=left and right_boundary<=right:
+        if left_boundary+1<=right and right_boundary-1>=left:
             if strand=='forward':
                 strandFormatted = '+'
             else:

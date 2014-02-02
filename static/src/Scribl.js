@@ -30,6 +30,16 @@ var dragDisplayLayer;
 var dragDisplayRect;
 var lastScrollTime=0; // In the callback, store the time and don't allow another event until enough time has processed
 DRAWINGS_HEIGHT=300;
+function adjustMouseX (mouseX) {
+    return mouseX-chart1.offset-$('.kineticjs-content').offset().left;
+}
+
+function getCoordsFromOrigMouseX (mouseX){
+    var adjXPos = adjustMouseX(mouseX);
+    var ret=Math.round(adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min);
+    return ret;
+}
+
 function startDrag (mouseX,mouseY,which) {
     if (which>1){ //not a left-click, cancel everything
         dragDisplayRect.setVisible(false);
@@ -37,24 +47,24 @@ function startDrag (mouseX,mouseY,which) {
         isDragging=false;
         chart1.text.setText('Aborting drag');
         chart1.messageLayer.draw();
-    } else {
+    } else { //start dragging
         isDragging=true;
-        var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
+        var adjXPos=adjustMouseX(mouseX);
         initAdjXPos=adjXPos;
-        initCoords=Math.round(adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min);
+        initCoords=getCoordsFromOrigMouseX(mouseX);
         chart1.text.setText('Drag to zoom');
         chart1.messageLayer.draw();
         dragDisplayRect.setVisible(true);
         dragDisplayRect.setX(adjXPos);
+        dragDisplayRect.setWidth(1);
         dragDisplayLayer.draw();
     }
 }
 
-
 function checkDrag (mouseX,mouseY) {
     if (isDragging) {
-        var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
-        var currentCoords=adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min;
+        var adjXPos=adjustMouseX(mouseX);
+        var currentCoords=getCoordsFromOrigMouseX(mouseX);
         chart1.text.setText('Zooming from '+chart1.getTickText(initCoords)+' to '+chart1.getTickText(currentCoords));
         chart1.messageLayer.draw();
         dragDisplayRect.setWidth(adjXPos-initAdjXPos);
@@ -65,7 +75,7 @@ function checkDrag (mouseX,mouseY) {
 function stopDrag (mouseX,mouseY) {
     if (isDragging) {
         isDragging=false;
-        var adjXPos=mouseX-(chart1.offset+$('.kineticjs-content').offset().left);
+        var adjXPos=adjustMouseX(mouseX);
         if (Math.abs(adjXPos-initAdjXPos) < 100 )
         {
             chart1.text.setText('Canceling zoom (select wider region)');
@@ -74,7 +84,7 @@ function stopDrag (mouseX,mouseY) {
             dragDisplayLayer.draw();
             return;
         }
-        var currentCoords=adjXPos*(chart1.scale.max-chart1.scale.min)/chart1.width+chart1.scale.min;
+        var currentCoords=getCoordsFromOrigMouseX(mouseX);
         chart1.text.setText('Finished to '+adjXPos+', coords='+currentCoords);
         chart1.messageLayer.draw();
         if (initAdjXPos > adjXPos){//We dragged from right to left
@@ -605,8 +615,8 @@ var Scribl = Class.extend({
          this.stage.add(featuresLayer);
         this.stage.add(resultsLayer);
 
-        dragDisplayLayer = new Kinetic.Layer({});
-        dragDisplayRect=new Kinetic.Rect({visible:false,height:490,y:50,width:10,x:0,stroke:'purple'});
+        dragDisplayLayer = new Kinetic.Layer({offsetX:-this.offset});
+        dragDisplayRect=new Kinetic.Rect({visible:false,height:490,y:50,width:1,x:0,stroke:'purple'});
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
    },
@@ -685,9 +695,11 @@ var Scribl = Class.extend({
       // determine the place to start first minor tick
       if (this.scale.min % this.tick.minor.size == 0)
          firstMinorTick = this.scale.min;
-      else
-         firstMinorTick = this.scale.min - (this.scale.min % this.tick.minor.size) 
+      else {
+         firstMinorTick = this.scale.min - (this.scale.min % this.tick.minor.size)
             + this.tick.minor.size;
+          this.scale.min=firstMinorTick;
+      }
  		    
       // draw
       for(var i = firstMinorTick; i <= this.scale.max; i += this.tick.minor.size){		    

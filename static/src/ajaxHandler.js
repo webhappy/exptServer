@@ -168,12 +168,13 @@ function initializePage(canvasName) {
                   var newRight=chart1.scale.max+factor;
             }
             if (newRight-newLeft < 100) {
-                return;
+                return false;
             }
             $('input[name="left"]').val(newLeft);
                 $('input[name="right"]').val(newRight);
                 updateAjax();
                 lastScrollTime=new Date().getTime();
+            return false;
         });
 }
 
