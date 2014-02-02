@@ -2,11 +2,12 @@ from flask import Flask, url_for, render_template, request, jsonify,json
 import os
 import cPickle,time
 import csv
+import numpy
 
 app = Flask(__name__)
 
 @app.route('/getFeatures')
-def getFeaturesAnaerobic():
+def getFeatures():
     left = request.args.get('left', 0, type=int)
     right = request.args.get('right', 0, type=int)
     expt = request.args.get('expt')
@@ -49,6 +50,7 @@ def getExptResultsFromAerobic (left, right):
             exptResults[curPos].append(curExpt['replicate2'][k])
             exptResults[curPos].append(curExpt['replicate3'][k])
     ret['exptResults']=exptResults
+    ret['all_sd']=sd_all_aerobic;
     assert len(ret['exptNames']) == len(ret['exptColors'])  # hopefully EXPT_RESULTS also have same length at each position
     return ret
 
@@ -78,6 +80,7 @@ def getExptResultsFromAnaerobic (left, right):
             exptResults[curPos].append(curExpt['replicate2'][k])
             exptResults[curPos].append(curExpt['replicate3'][k])
     ret['exptResults']=exptResults
+    ret['all_sd']=sd_all_anaerobic;
     assert len(ret['exptNames']) == len(ret['exptColors'])  # hopefully EXPT_RESULTS also have same length at each position
     return ret
 
@@ -187,6 +190,11 @@ for row in anaerobicFile:
     anaerobicExptData['replicate1'].append(float(row[3]))
     anaerobicExptData['replicate2'].append(float(row[4]))
     anaerobicExptData['replicate3'].append(float(row[5]))
+
+sd_all_aerobic=numpy.std(numpy.array(aerobicExptData['replicate1']+aerobicExptData['replicate2']+aerobicExptData['replicate3']));
+sd_all_anaerobic=numpy.std(numpy.array(anaerobicExptData['replicate1']+anaerobicExptData['replicate2']+anaerobicExptData['replicate3']))
+# print "SD's over all aerobic data is "+str(sd_all_aerobic)
+# print "SD's over all anaerobic data is "+str(sd_all_anaerobic)
 
 end=time.clock()
 

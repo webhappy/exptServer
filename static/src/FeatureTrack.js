@@ -3,7 +3,7 @@
  */
 var TFBS_HEIGHT=25;
 var GENE_HEIGHT=2*TFBS_HEIGHT;
-var RESULT_HEIGHT=200; //height of the panel where we draw the experimental data
+var RESULT_HEIGHT=300; //height of the panel where we draw the experimental data
 var FeatureTrack = Lane.extend({
     init: function(chart, geneHeight) {
       // defaults
@@ -26,37 +26,61 @@ var FeatureTrack = Lane.extend({
       return ( this.chart.convertNtsToPixels( position ) );
    },
 
+    drawIndicatorLine: function(layer,yPos,name, namePos,strokeWidth,strokeStyle,dashStyle) {
+        if (!strokeStyle)
+            strokeStyle = '#E0E0E0';
+        if (!strokeWidth)
+            strokeWidth=1;
+        if (!dashStyle)
+            dashStyle=[10,5];
+
+        var l=new Kinetic.Line({points:[0,0,this.chart.width,0],stroke:strokeStyle,dash:dashStyle,strokeWidth:strokeWidth,offsetY:yPos});
+        layer.add(l);
+        if ( name ) {
+            if (!namePos)
+                namePos=20;
+            var t=new Kinetic.Text({text:name,fill:'black',x:namePos,y:0,offsetY:yPos});
+            t.setY(-t.height() / 2);
+            layer.add(new Kinetic.Rect({x:namePos-2,y:-t.height()/2,offsetY:yPos,fill:COLOR_BG,height: t.height(),width: 8+t.width()}));
+            layer.add(t);
+        }
+
+        return l;
+    },
+
     /**
      * Assumes drawScale in the associated chart has already been called. We will use the now computed offset
      */
     drawExptResults: function (layer) {
+        function getHeight (yVal) {
+            return 1.0*RESULT_HEIGHT * (yVal - Y_MIN)/(Y_MAX-Y_MIN)
+        }
         var Y_MIN=-4;
         var Y_MAX=4;
         var ARROW_PIXELS=5;//Math.round(this.chart.convertNtsToPixels(7));
 
-        layer.add(new Kinetic.Line({
-            points:[0,0,this.chart.width,0],
-            stroke:'black',
-            dash:[15,5],
-            offsetY:-RESULT_HEIGHT/2
-        }));
-        //Draw 0 by dashed line
-        var text0 = new Kinetic.Text({text: '0', fill: 'black',offsetX:8});
-        text0.offsetY(-RESULT_HEIGHT / 2+text0.getHeight() / 2);
-        layer.add(text0);
+        var drawLinesAtSD = [-3, -2, -1, 1, 2];
+        for (var j=0;j<drawLinesAtSD.length;j++){
+            var curSD=drawLinesAtSD[j];
+            var curY=curSD*this.chart.sd;
+            var yPos=getHeight(curY)-RESULT_HEIGHT;
+            this.drawIndicatorLine(layer, yPos, curSD+' SD='+curY.toPrecision(4), 40, 1, 'grey');
+        }
+
+        this.drawIndicatorLine(layer, -RESULT_HEIGHT / 2, 'LR=0', 10, 2, 'black',[15,5]);
 
         var pixelsWidth=Math.ceil(this.chart.convertNtsToPixels(20));
         for (var j=0;j<this.tickers.length;j++) {
             var cur=this.tickers[j];
             for (var k=0;k<cur.yVals.length;k++) {
                 var posX = this.getTickerPositionX(cur.left);
-                var height = 1.0*RESULT_HEIGHT * (cur.yVals[k] - Y_MIN)/(Y_MAX-Y_MIN);
+                var height = getHeight(cur.yVals[k]);
                 var group=new Kinetic.Group({offsetX:-posX,offsetY:-RESULT_HEIGHT+height});
                 if ( cur.strand=='+' ) {
-                    group.add(new Kinetic.Line({points: [0, 0, pixelsWidth, 0,pixelsWidth-ARROW_PIXELS,-ARROW_PIXELS],stroke:this.chart.exptColors[k]}));
+                    group.add(new Kinetic.Line({strokeWidth:2,points: [0, 0, pixelsWidth, 0,pixelsWidth-ARROW_PIXELS,-ARROW_PIXELS],stroke:this.chart.exptColors[k]}));
                 }
                 else {
-                    group.add(new Kinetic.Line({
+                    group.add(new Kinetic.Line({strokeWidth:2,
                         points: [pixelsWidth, 0, 0, 0,ARROW_PIXELS,ARROW_PIXELS],stroke:this.chart.exptColors[k]}
                     ));
                 }

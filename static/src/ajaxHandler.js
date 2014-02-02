@@ -1,15 +1,17 @@
 /**
  * Created by davidc on 1/24/14.
  */
-var MAX_NT_SLIDER=6000;
-
+var MAX_NT_SLIDER=10000;
 function updateRanges () {
     var vals = $('#slider').val();
     $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])));
     $('input[name="right"]').val(Math.round(chart1.ntOffset+Math.round(vals[1])));
+
+    if (  (new Date().getTime()-lastScrollTime) >500 )
+        updateAjax(true);
 }
 
-function updateAjax() {
+function updateAjax(doNotModifySlider) {
     $.ajax({
         url:  '/getFeatures',
         data: {
@@ -31,6 +33,7 @@ function updateAjax() {
             var TFBS = json[2];
             var exptInfoWithResults = json[3];
             var exptResults = exptInfoWithResults['exptResults'];
+            chart1.sd = exptInfoWithResults['all_sd'];
             chart1.exptNames = exptInfoWithResults.exptNames;
             chart1.exptColors=exptInfoWithResults.exptColors;
             var sRNA = json[4];
@@ -79,8 +82,10 @@ function updateAjax() {
                 chart1.addTicker(curLoc,strand,exptResults[curLoc].slice(1))
             }
 
-            chart1.ntOffset=Math.max(0,Math.round((leftVal+rightVal)/2)-MAX_NT_SLIDER/2);
-            $('#slider').val([leftVal-chart1.ntOffset,rightVal-chart1.ntOffset]);
+            if (!doNotModifySlider) {
+                chart1.ntOffset=Math.max(0,Math.round((leftVal+rightVal)/2)-MAX_NT_SLIDER/2);
+                $('#slider').val([leftVal-chart1.ntOffset,rightVal-chart1.ntOffset]);
+            }
             chart1.draw();
         },
         error: function (xhr,status) {alert("Error getting JSON!")}

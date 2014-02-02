@@ -5,4 +5,5 @@ Werkzeug==0.9.4
 gunicorn==18.0
 itsdangerous==0.23
 newrelic==2.10.1.9
+numpy==1.8.0
 wsgiref==0.1.2

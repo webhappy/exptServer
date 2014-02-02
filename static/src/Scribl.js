@@ -22,6 +22,10 @@ function replaceNumberWithCommas(yourNumber) {
     return n.join(".");
 }
 
+var COLOR_1='#4A6395';
+var COLOR_2='#C4D85F';
+var COLOR_3='#8F4091'
+var COLOR_BG='#E2D7C2';
 var isDragging=false;
 var initCoords= 0, currentCoords = 0;
 var initAdjXPos;
