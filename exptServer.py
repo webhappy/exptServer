@@ -159,6 +159,36 @@ def showAnaerobicOnly():
 def index():
     return showAerobicOnly()
 
+start=time.clock()
+genes=cPickle.load(open('genes_pickled.txt','rb'))
+promoters=cPickle.load(open('promoters_pickled.txt','rb'))
+TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
+sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
+
+#(EXPT_RESULTS,EXPT_POSITIONS,EXPT_STRAND)=cPickle.load(open('expt_results.txt','rb'))
+aerobicFile=csv.reader(open('Aerobic.csv','rb'))
+header=aerobicFile.next()
+#sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
+aerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
+for row in aerobicFile:
+    aerobicExptData['pos'].append(int(row[0]))
+    aerobicExptData['strand'].append(row[2])
+    aerobicExptData['replicate1'].append(float(row[3]))
+    aerobicExptData['replicate2'].append(float(row[4]))
+    aerobicExptData['replicate3'].append(float(row[5]))
+
+anaerobicFile=csv.reader(open('Anaerobic.csv','rb'))
+header=anaerobicFile.next()
+#sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
+anaerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
+for row in anaerobicFile:
+    anaerobicExptData['pos'].append(int(row[0]))
+    anaerobicExptData['strand'].append(row[2])
+    anaerobicExptData['replicate1'].append(float(row[3]))
+    anaerobicExptData['replicate2'].append(float(row[4]))
+    anaerobicExptData['replicate3'].append(float(row[5]))
+
+end=time.clock()
 
 if __name__ == '__main__':
     import argparse
@@ -191,34 +221,4 @@ if __name__ == '__main__':
         app_options["use_debugger"] = True
         app_options["use_reloader"] = True
 
-    start=time.clock()
-    genes=cPickle.load(open('genes_pickled.txt','rb'))
-    promoters=cPickle.load(open('promoters_pickled.txt','rb'))
-    TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
-    sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
-
-    #(EXPT_RESULTS,EXPT_POSITIONS,EXPT_STRAND)=cPickle.load(open('expt_results.txt','rb'))
-    aerobicFile=csv.reader(open('aerobic.csv','rb'))
-    header=aerobicFile.next()
-    #sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
-    aerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
-    for row in aerobicFile:
-        aerobicExptData['pos'].append(int(row[0]))
-        aerobicExptData['strand'].append(row[2])
-        aerobicExptData['replicate1'].append(float(row[3]))
-        aerobicExptData['replicate2'].append(float(row[4]))
-        aerobicExptData['replicate3'].append(float(row[5]))
-
-    anaerobicFile=csv.reader(open('anaerobic.csv','rb'))
-    header=anaerobicFile.next()
-    #sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
-    anaerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
-    for row in anaerobicFile:
-        anaerobicExptData['pos'].append(int(row[0]))
-        anaerobicExptData['strand'].append(row[2])
-        anaerobicExptData['replicate1'].append(float(row[3]))
-        anaerobicExptData['replicate2'].append(float(row[4]))
-        anaerobicExptData['replicate3'].append(float(row[5]))
-
-    end=time.clock()
     app.run(extra_files=extra_files)
