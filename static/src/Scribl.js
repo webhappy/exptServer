@@ -34,6 +34,9 @@ var dragDisplayLayer;
 var dragDisplayRect;
 var lastScrollTime=0; // In the callback, store the time and don't allow another event until enough time has processed
 DRAWINGS_HEIGHT=300;
+TFBS_HEIGHT=25;
+GENE_HEIGHT=2*TFBS_HEIGHT;
+RESULT_HEIGHT=300; //height of the panel where we draw the experimental data
 function adjustMouseX (mouseX) {
     return mouseX-chart1.offset-$('.kineticjs-content').offset().left;
 }
@@ -620,7 +623,7 @@ var Scribl = Class.extend({
         this.stage.add(resultsLayer);
 
         dragDisplayLayer = new Kinetic.Layer({offsetX:-this.offset});
-        dragDisplayRect=new Kinetic.Rect({visible:false,height:490,y:50,width:1,x:0,stroke:'purple'});
+        dragDisplayRect=new Kinetic.Rect({visible:false,height:DRAWINGS_HEIGHT+this.getScaleHeight()+RESULT_HEIGHT,y:50,width:1,x:0,stroke:'purple'});
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
    },

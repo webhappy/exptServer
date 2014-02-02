@@ -1,9 +1,6 @@
 /**
  * Created by davidc on 1/17/14.
  */
-var TFBS_HEIGHT=25;
-var GENE_HEIGHT=2*TFBS_HEIGHT;
-var RESULT_HEIGHT=300; //height of the panel where we draw the experimental data
 var FeatureTrack = Lane.extend({
     init: function(chart, geneHeight) {
       // defaults
