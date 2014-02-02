@@ -3,6 +3,7 @@
  */
 var MAX_NT_SLIDER=10000;
 var waitingForAJAX=false;
+lastDrawTime=new Date().getTime();
 function updateRanges () {
     var vals = $('#slider').val();
     $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])));
@@ -13,9 +14,11 @@ function updateRanges () {
         waitingForAJAX=true;
         updateAjax(true);
         lastScrollTime=curTime;
-    }else{
+    }else if (curTime-lastDrawTime > 30){
         updateChartBoundaries();
+        chart1.clear();
         chart1.draw();
+        lastDrawTime=curTime;
     }
 }
 
@@ -80,7 +83,6 @@ function addJSONDataToChart (json, chart1){
 function updateChartBoundaries() {
     var rightVal = parseInt($('input[name="right"]').val());
     var leftVal = parseInt($('input[name="left"]').val());
-    chart1.clear();
     $('input[name="gene"]').val('');
     chart1.scale.max = rightVal;
     chart1.scale.min = leftVal;
@@ -100,6 +102,7 @@ function updateAjax(doNotModifySlider) {
             var __ret = updateChartBoundaries();
             var rightVal = __ret.rightVal;
             var leftVal = __ret.leftVal;
+            chart1.clear();
             addJSONDataToChart(json, chart1);
 
             if (!doNotModifySlider) {

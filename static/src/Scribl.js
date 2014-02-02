@@ -540,30 +540,22 @@ var Scribl = Class.extend({
         messageLayer.add(this.text);
         this.stage.add(messageLayer);
 
-        var scaleLayer=this.drawScale(new Kinetic.Layer({offsetY:-(DRAWINGS_HEIGHT)}));
-        this.stage.add(scaleLayer);
-        //scaleLayer.on('mouseover',function(){alert('wtf?');});
-
-
-      // initalize variables
-
-       //My hack to shift the entire graph down to make room
-      //  ctx.translate(0,300);
-      //  this.drawScale();
-      // ctx.translate(0,-100);
+        this.scaleLayer=this.drawScale(new Kinetic.Layer({offsetY:-(DRAWINGS_HEIGHT)}));
+        this.stage.add(this.scaleLayer);
 
         var tracks=this.tracks;
-        var featuresLayer = new Kinetic.Layer({offsetY:-DRAWINGS_HEIGHT,scaleY:1});
+        this.featuresLayer = new Kinetic.Layer({offsetY:-DRAWINGS_HEIGHT,scaleY:1});
       // draw tracks
-        var resultsLayer=new Kinetic.Layer({offsetX:-this.offset, offsetY:-DRAWINGS_HEIGHT-this.getScaleHeight()});
-        this.featureTrack.draw(featuresLayer,resultsLayer);
-         this.stage.add(featuresLayer);
-        this.stage.add(resultsLayer);
+        this.resultsLayer=new Kinetic.Layer({offsetX:-this.offset, offsetY:-DRAWINGS_HEIGHT-this.getScaleHeight()});
+        this.featureTrack.draw(this.featuresLayer,this.resultsLayer);
+         this.stage.add(this.featuresLayer);
+        this.stage.add(this.resultsLayer);
 
         dragDisplayLayer = new Kinetic.Layer({offsetX:-this.offset});
         dragDisplayRect=new Kinetic.Rect({visible:false,height:DRAWINGS_HEIGHT+this.getScaleHeight()+RESULT_HEIGHT,y:50,width:1,x:0,stroke:'purple'});
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
+        this.renderedAtMin=this.scale.min;
    },
 
     /**
