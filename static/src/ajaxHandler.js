@@ -4,24 +4,32 @@
 var MAX_NT_SLIDER=10000;
 var waitingForAJAX=false;
 lastDrawTime=new Date().getTime();
+var waitingToDraw=false;
 function updateRanges () {
-    var vals = $('#slider').val();
-    $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])));
-    $('input[name="right"]').val(Math.round(chart1.ntOffset+Math.round(vals[1])));
+    if (!waitingToDraw){
+        var vals = $('#slider').val();
+        $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])));
+        $('input[name="right"]').val(Math.round(chart1.ntOffset+Math.round(vals[1])));
 
-    var curTime = new Date().getTime();
-    if (  !waitingForAJAX  && (curTime-lastScrollTime) >250  ) {//&& (curTime-lastScrollTime) < 1000
-        waitingForAJAX=true;
-        updateAjax(true);
-        lastScrollTime=curTime;
-    }else if (curTime-lastDrawTime > 30){
-        updateChartBoundaries();
-        chart1.clear();
-        chart1.draw();
-        lastDrawTime=curTime;
-    }
+        var curTime = new Date().getTime();
+        if (  !waitingForAJAX  && (curTime-lastScrollTime) >250  ) {//&& (curTime-lastScrollTime) < 1000
+            waitingForAJAX=true;
+            updateAjax(true);
+            lastScrollTime=curTime;
+        }else if (curTime-lastDrawTime > 30){
+            updateChartBoundaries();
+            chart1.clear();
+            chart1.draw();
+            lastDrawTime=curTime;
+        }
+    } else alert('still waiting to draw!');
 }
 
+/**
+ * Clears current data from chart and adds new data to chart from json
+ * @param json
+ * @param chart1
+ */
 function addJSONDataToChart (json, chart1){
     delete chart1.featureTrack;
     chart1.featureTrack=new FeatureTrack(chart1);
@@ -71,6 +79,7 @@ function addJSONDataToChart (json, chart1){
     }
 
     for (var curLoc in exptResults) {
+        curLoc=parseInt(curLoc);
         var strand=exptResults[curLoc][0];
 
          //Force elements in results as a floating point instead of a string

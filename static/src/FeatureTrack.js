@@ -44,6 +44,127 @@ var FeatureTrack = Lane.extend({
         return l;
     },
 
+    drawSmootherForStrand: function (group,origTickers,strand,color){
+         var Y_MIN=-4;
+        var Y_MAX=4;
+        function convertYValtoPixelPos (yVal) {
+            var adj=-1.0*RESULT_HEIGHT * (yVal - Y_MIN)/(Y_MAX-Y_MIN);
+            if ( adj < -RESULT_HEIGHT)
+                adj=-RESULT_HEIGHT;
+            if ( adj > RESULT_HEIGHT)
+                adj=RESULT_HEIGHT;
+           // alert(adj+RESULT_HEIGHT);
+            return adj+RESULT_HEIGHT; //Notice it's slightly different from drawExptResults
+        }
+
+        var topPositions={}, botPositions={};
+        var tickers=[];
+        var OFFSET=10;
+        for (var j=0;j<origTickers.length;j++) {
+            if ( origTickers[j].strand==strand)
+                tickers.push(origTickers[j]);
+        }
+        for (var j=0;j<tickers.length;j++) {
+            var cur=tickers[j];
+            var m = mean(cur.yVals);
+            var stdErr = std(cur.yVals) / Math.sqrt(cur.yVals.length);
+            topPositions[cur.left+OFFSET]=m+stdErr;
+            botPositions[cur.left+OFFSET]=m-stdErr;
+        }
+
+        var NUM_INTERPOLATING_POINTS=500;
+        var interval=(this.chart.scale.max-this.chart.scale.min)/NUM_INTERPOLATING_POINTS;
+        var curIdx=0; //increment this to keep track of where we are in this.tickers
+        var prevTickerCoord=tickers[0].left+OFFSET;
+        var prevTickerYtop=topPositions[prevTickerCoord],prevTickerYbot=botPositions[prevTickerCoord];
+        var lastInterpolatingYtop=convertYValtoPixelPos(prevTickerYtop);
+        var lastInterpolatingYbot=convertYValtoPixelPos(prevTickerYbot);
+        var lastInterpolatingX=this.getTickerPositionX(prevTickerCoord);
+
+        for (var curCoord=this.chart.scale.min;curCoord<= this.chart.scale.max;curCoord+=interval) {
+            var conf=0; //increase this for very close points
+            for (var j=0;j<tickers.length;j++){
+                //calculate distance for this
+                if (Math.abs(tickers[j].left+OFFSET-curCoord)<500){
+                    conf+=Math.exp((-Math.pow(tickers[j].left+OFFSET-curCoord,2))/20);
+                }
+            }
+            //conf /= tickers.length;
+
+            if (conf > 1e-5)
+            {
+                if (curIdx < tickers.length && curCoord>=tickers[curIdx].left+OFFSET){
+                    //need to increment curIdx
+                    prevTickerCoord=tickers[curIdx].left+OFFSET;
+                    prevTickerYtop = topPositions[prevTickerCoord];
+                    prevTickerYbot=botPositions[prevTickerCoord];
+                    var curTopYPixel=convertYValtoPixelPos(prevTickerYtop);
+                    var curBotYPixel = convertYValtoPixelPos(prevTickerYbot);
+                    var curXPixel=this.getTickerPositionX(curCoord);
+                    if (curIdx>0) {
+                        var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,opacity:conf,stroke:'',
+                            points:[lastInterpolatingX-2,lastInterpolatingYtop,lastInterpolatingX-2,lastInterpolatingYbot,curXPixel,curBotYPixel,curXPixel,curTopYPixel]});
+
+                    }else {
+                       var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,opacity:conf,stroke:'',
+                            points:[curXPixel-interval,curTopYPixel,curXPixel-interval,curBotYPixel,curXPixel,curBotYPixel,curXPixel,curTopYPixel]});
+                    }
+                    group.add(l);
+                    lastInterpolatingX=curXPixel;
+                    lastInterpolatingYtop=curTopYPixel;
+                    lastInterpolatingYbot=curBotYPixel;
+                    curIdx++;
+                }else if (curIdx==0 || curIdx>=tickers.length){
+                    var curTopYPixel=convertYValtoPixelPos(prevTickerYtop);
+                    var curBotYPixel = convertYValtoPixelPos(prevTickerYbot);
+                    var curXPixel=this.getTickerPositionX(curCoord);
+                    var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,opacity:conf,stroke:'',
+                            points:[curXPixel-interval,curTopYPixel,curXPixel-interval,curBotYPixel,curXPixel,curBotYPixel,curXPixel,curTopYPixel]});
+                    group.add(l);
+                }
+                    else
+                    {
+                        //     if (curIdx>0) {
+                        //interpolate between prevPosition and curIdx
+                        var nextX=tickers[curIdx].left+OFFSET;
+                        var nextYtop=topPositions[nextX];
+                        var nextYbot=botPositions[nextX];
+                        //newY=lastY + deltaX * slope
+                        var changeYtop=prevTickerYtop+(curCoord-prevTickerCoord)*(nextYtop-prevTickerYtop)/(nextX-prevTickerCoord);
+                        var changeYbot=prevTickerYbot+(curCoord-prevTickerCoord)*(nextYbot-prevTickerYbot)/(nextX-prevTickerCoord);
+
+                        var curYPixelTop = convertYValtoPixelPos(changeYtop);
+                        var curYPixelBot = convertYValtoPixelPos(changeYbot);
+                        var curXPixel=this.getTickerPositionX(curCoord);
+
+                        // if (conf<1e-6)
+                        //     continue; //don't attempt to draw a line
+                        // {
+                        //draw a line
+                        var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,stroke:'',opacity:conf,
+                            points:[lastInterpolatingX-2,lastInterpolatingYtop,lastInterpolatingX-2,lastInterpolatingYbot,curXPixel,curYPixelBot,curXPixel,curYPixelTop]});
+                        group.add(l);
+                        // }
+                        lastInterpolatingYbot=curYPixelBot;
+                        lastInterpolatingYtop=curYPixelTop;
+                        lastInterpolatingX=curXPixel;
+                        // }
+                }
+            }
+
+        }
+    },
+
+    drawSmoother: function (resultsLayer) {
+        var group = new Kinetic.Group();
+
+        var origTickers = this.tickers;
+        this.drawSmootherForStrand(group,origTickers,'+','#B8A1B8');
+        this.drawSmootherForStrand(group,origTickers,'-','#889F9A');
+
+        resultsLayer.add(group);
+    },
+
     /**
      * Assumes drawScale in the associated chart has already been called. We will use the now computed offset
      */
@@ -64,6 +185,9 @@ var FeatureTrack = Lane.extend({
         }
 
         this.drawIndicatorLine(layer, -RESULT_HEIGHT / 2, 'LR=0', 10, 2, 'black',[15,5]);
+
+        //huh?
+        //this.drawSmoother(layer);
 
         var pixelsWidth=Math.ceil(this.chart.convertNtsToPixels(20));
         for (var j=0;j<this.tickers.length;j++) {

@@ -5,7 +5,7 @@
  *
  * Chase Miller 2011
  */
-
+var geneGlyphCount=0;
 var BlockArrow = Glyph.extend({
     /** **init**
 
@@ -33,7 +33,7 @@ var BlockArrow = Glyph.extend({
         var lenArrow=Math.min(.3*length,GENE_HEIGHT);
         var heightRect =Math.max(10, Math.round(lenArrow/4)); //Math.round(GENE_HEIGHT / 4);
         var heightArrow = Math.max(18,Math.round(lenArrow/2));//(GENE_HEIGHT / 2);
-        var lenRect=length-lenArrow;
+        var lenRect=length-lenArrow;//test
         // draw lines
         var offsetX=this.getPixelPositionX();
         var group=new Kinetic.Group({
@@ -44,12 +44,14 @@ var BlockArrow = Glyph.extend({
             points:[0,heightRect,0,-heightRect,lenRect,-heightRect,lenRect,-heightArrow,length,0,lenRect,heightArrow,lenRect,heightRect],
             stroke:'black',
             fill:'#ffbb73',
+            id: 'gene'+geneGlyphCount++,
             closed:true
         });
 
         /*
         Compute where the center of the text should be
         Want to align between rectangle edge and halfway into arrowhead
+
          */
         var center;
         if (this.strand=='-') {
@@ -59,13 +61,14 @@ var BlockArrow = Glyph.extend({
         } else
             center=(lenRect+lenArrow/2)/2;
 
-        poly.name=this.name;
+        poly.msg=this.name +' starts at '+this.position;
         poly.on('mouseover', function() {
-            writeMessage(this.name);
+            writeMessage(this.msg);
         });
         poly.on('mouseout', function() {
             writeMessage('');
         });
+
         //layer.add()
         group.add(poly);
 
@@ -88,8 +91,6 @@ var BlockArrow = Glyph.extend({
 
         group.add(text);
         layer.add(group);
-
-
     }
 });
 		

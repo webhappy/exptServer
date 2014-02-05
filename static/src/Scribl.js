@@ -22,6 +22,26 @@ function replaceNumberWithCommas(yourNumber) {
     return n.join(".");
 }
 
+function mean(arr) {
+    var sum=0;
+    for (var j=0;j<arr.length;j++)
+        sum += arr[j];
+    return sum/arr.length;
+}
+
+/**
+ * Uncorrected standard deviation of array
+ * @param arr array of numbers
+ * @returns {number}
+ */
+function std (arr) {
+    var ave = mean(arr);
+    var sum=0;
+    for (var j=0;j<arr.length;j++)
+        sum += Math.pow(arr[j] - ave, 2);
+    return Math.pow(sum / arr.length, .5);
+}
+
 var COLOR_1='#4A6395';
 var COLOR_2='#C4D85F';
 var COLOR_3='#8F4091'
@@ -524,6 +544,7 @@ var Scribl = Class.extend({
      */
 
     draw: function () {
+        waitingToDraw=true;
         this.width=window.innerWidth - 80;
         this.stage = new Kinetic.Stage({container: 'container', width :this.width , height: 800});
         this.initScale();
@@ -556,6 +577,7 @@ var Scribl = Class.extend({
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
         this.renderedAtMin=this.scale.min;
+        waitingToDraw=false;
    },
 
     /**
