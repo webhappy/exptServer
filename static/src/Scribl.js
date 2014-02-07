@@ -112,7 +112,7 @@ function stopDrag (mouseX,mouseY) {
             return;
         }
         var currentCoords=getCoordsFromOrigMouseX(mouseX);
-        chart1.text.setText('Finished to '+adjXPos+', coords='+currentCoords);
+        chart1.text.setText('Zoomed from '+initCoords+' to '+currentCoords);
         chart1.messageLayer.draw();
         if (initAdjXPos > adjXPos){//We dragged from right to left
             var t=initCoords;
@@ -548,18 +548,22 @@ var Scribl = Class.extend({
         this.width=window.innerWidth - 80;
         this.stage = new Kinetic.Stage({container: 'container', width :this.width , height: 800});
         this.initScale();
-        var messageLayer = new Kinetic.Layer({});
-        this.messageLayer=messageLayer;
-        this.text = new Kinetic.Text({
-        x: 70,
-        y: 10,
-        fontFamily: 'Calibri',
-        fontSize: 24,
-        text: '',
-        fill: 'black'
-      });
-        messageLayer.add(this.text);
-        this.stage.add(messageLayer);
+        if (!this.messageLayer) {
+            var messageLayer = new Kinetic.Layer({});
+            this.messageLayer=messageLayer;
+            this.text = new Kinetic.Text({
+            x: 70,
+            y: 10,
+            fontFamily: 'Calibri',
+            fontSize: 24,
+            text: '',
+            fill: 'black'
+          });
+            messageLayer.add(this.text);
+            this.stage.add(messageLayer);
+        }else{
+            this.stage.add(this.messageLayer);
+        }
 
         this.scaleLayer=this.drawScale(new Kinetic.Layer({offsetY:-(DRAWINGS_HEIGHT)}));
         this.stage.add(this.scaleLayer);
@@ -586,7 +590,10 @@ var Scribl = Class.extend({
     clear:function(){
         //this.scale.max = undefined;
         //this.scale.min = undefined;
-        this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
+        if (this.stage) {
+            this.stage.clear();
+            delete this.stage;
+        }
         //this.tracks[0]=new Track(this);
         //this.featureTrack = new FeatureTrack(this, this.laneSizes);
     },

@@ -1,28 +1,39 @@
 /**
  * Created by davidc on 1/24/14.
  */
-var MAX_NT_SLIDER=10000;
+var sliderNTWidth=10000;
 var waitingForAJAX=false;
 lastDrawTime=new Date().getTime();
 var waitingToDraw=false;
 function updateRanges () {
-    if (!waitingToDraw){
+    var curTime = new Date().getTime();
+    if (!waitingToDraw && curTime-lastDrawTime>10){
         var vals = $('#slider').val();
         $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])));
         $('input[name="right"]').val(Math.round(chart1.ntOffset+Math.round(vals[1])));
 
-        var curTime = new Date().getTime();
         if (  !waitingForAJAX  && (curTime-lastScrollTime) >250  ) {//&& (curTime-lastScrollTime) < 1000
             waitingForAJAX=true;
             updateAjax(true);
             lastScrollTime=curTime;
-        }else if (curTime-lastDrawTime > 30){
+        }else if (!waitingForAJAX && curTime-lastDrawTime > 20){
             updateChartBoundaries();
             chart1.clear();
             chart1.draw();
             lastDrawTime=curTime;
         }
-    } else alert('still waiting to draw!');
+    } //else alert('still waiting to draw!');
+}
+
+function sliderBlocked () {
+//    alert('blocked!');
+//    var curTime = new Date().getTime();
+//      var vals = $('#slider').val();
+//    $('input[name="left"]').val(Math.round(chart1.ntOffset+Math.round(vals[0])+500));
+//    $('input[name="right"]').val(Math.round(chart1.ntOffset+Math.round(vals[1])+500));
+//    waitingForAJAX=true;
+//    updateAjax(false);
+//    lastScrollTime=curTime;
 }
 
 /**
@@ -115,7 +126,9 @@ function updateAjax(doNotModifySlider) {
             addJSONDataToChart(json, chart1);
 
             if (!doNotModifySlider) {
-                chart1.ntOffset = Math.max(0, Math.round((leftVal + rightVal) / 2) - MAX_NT_SLIDER / 2);
+                sliderNTWidth = Math.max(10000, ( rightVal-leftVal) * 5);
+                $('#slider').noUiSlider({range:[0, sliderNTWidth]},true);
+                chart1.ntOffset = Math.max(0, Math.round((leftVal + rightVal) / 2) - sliderNTWidth / 2);
                 $('#slider').val([leftVal - chart1.ntOffset, rightVal - chart1.ntOffset]);
             }
             chart1.draw();
@@ -161,7 +174,7 @@ function initializePage(canvasName) {
         chart1 = new Scribl(canvas, 800);
         chart1.ntOffset=0;
 
-    $('#slider').noUiSlider({range:[0, MAX_NT_SLIDER],start:[2250,2750],handles:2,connect:true,behaviour:'drag',set:updateAjax,slide:updateRanges});
+    ntSlider=$('#slider').noUiSlider({range:[0, sliderNTWidth],start:[2250,2750],handles:2,connect:true,behaviour:'drag',block:sliderBlocked,set:updateAjax,slide:updateRanges});
     $('input[name="gene"]').keypress(function(evt){
             if (evt.which==13) {
                 getCoordsByAJAX($('input[name="gene"]').val());

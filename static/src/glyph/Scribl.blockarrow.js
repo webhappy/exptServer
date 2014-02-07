@@ -61,11 +61,11 @@ var BlockArrow = Glyph.extend({
         } else
             center=(lenRect+lenArrow/2)/2;
 
-        poly.msg=this.name +' starts at '+this.position;
-        poly.on('mouseover', function() {
+        group.msg=this.name +' starts at '+this.position;
+        group.on('mouseover', function() {
             writeMessage(this.msg);
         });
-        poly.on('mouseout', function() {
+        group.on('mouseout', function() {
             writeMessage('');
         });
 
