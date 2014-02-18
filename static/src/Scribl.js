@@ -186,27 +186,6 @@ var Scribl = Class.extend({
         this.glyph.text.font = 'arial';
         this.glyph.text.align = 'center';
 
-
-        // initialize common types
-        this.gene = {};
-        this.gene.text = {};
-        this.protein = {};
-        this.protein.text = {};
-
-        // event defaults
-        this.events = {};
-        this.events.hasClick = false;
-        this.events.hasMouseover = false;
-        this.events.clicks = new Array;
-        this.events.mouseovers = new Array;
-        this.events.added = false;
-        this.mouseHandler = function (e) {
-            chart.handleMouseEvent(e, 'mouseover')
-        };
-        this.clickHandler = function (e) {
-            chart.handleMouseEvent(e, 'click')
-        };
-
         // tick defaults
         this.tick = {};
         this.tick.auto = true;
@@ -218,34 +197,9 @@ var Scribl = Class.extend({
         this.tick.minor.color = 'rgb(55,55,55)';
         this.tick.halfColor = 'rgb(10,10,10)';
 
-        // tooltip defaults
-        this.tooltips = {};
-        this.tooltips.text = {}
-        this.tooltips.text.font = 'arial';
-        this.tooltips.text.size = 12; // in pixels
-        this.tooltips.borderWidth = 1; // in pixels
-        this.tooltips.roundness = 5;  // in pixels
-        this.tooltips.fade = false;
-        this.tooltips.style = 'light';  // also a 'dark' option
-        this.lastToolTips = [];
-
-        // scroll defaults
-        this.scrollable = false;
-        this.scrollValues = [0, undefined]; // values in nts where scroll
-
-        this.chars = {};
-        this.chars.drawOnBuild = [];
-
         // draw defaults
         this.drawStyle = 'expand';
 
-        // draw hooks
-        this.glyphHooks = [];
-        this.trackHooks = [];
-
-        // private variables
-        this.myMouseEventHandler = new MouseEventHandler(this);
-        this.tracks = [];
         var scaleSize = this.scale.size;
         var scaleFontSize = this.scale.font.size
     },
@@ -598,18 +552,6 @@ var Scribl = Class.extend({
         //this.featureTrack = new FeatureTrack(this, this.laneSizes);
     },
 
-   /** **redraw**
-
-    * _clears chart/view and draws it_
-    
-    * @api public
-    */			
-	redraw: function(){
-      this.ctx.clearRect(0,0,this.canvas.width, this.canvas.height);
-      if (this.tracks.length > 0)
-         this.draw();
-	},
-	
 	/** **initScale**
    
     * _initializes scale_
