@@ -103,7 +103,9 @@ function stopDrag (mouseX,mouseY) {
     if (isDragging) {
         isDragging=false;
         var adjXPos=adjustMouseX(mouseX);
-        if (Math.abs(adjXPos-initAdjXPos) < 100 )
+        var currentCoords=getCoordsFromOrigMouseX(mouseX);
+
+        if (Math.abs(currentCoords-initCoords) < 50 )
         {
             chart1.text.setText('Canceling zoom (select wider region)');
             chart1.messageLayer.draw();
@@ -111,7 +113,6 @@ function stopDrag (mouseX,mouseY) {
             dragDisplayLayer.draw();
             return;
         }
-        var currentCoords=getCoordsFromOrigMouseX(mouseX);
         chart1.text.setText('Zoomed from '+initCoords+' to '+currentCoords);
         chart1.messageLayer.draw();
         if (initAdjXPos > adjXPos){//We dragged from right to left

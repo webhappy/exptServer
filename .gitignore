@@ -2,5 +2,5 @@
 .idea/*.xml
 .idea/workspace.xml
 venv
-
+.DS_Store
 .Rproj.user

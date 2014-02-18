@@ -21,7 +21,7 @@
         <script src="{{ url_for('static',filename='src/glyph/Scribl.seq.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/sgRNATicker.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/TFBS.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/jquery.mousewheel.min.js') }}" ></script>
+        <script src="{{ url_for('static',filename='src/jquery.mousewheel.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/jquery.nouislider.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/jquery-ui-1.10.4.custom.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/ajaxHandler.js') }}" ></script>
@@ -51,8 +51,10 @@
 
     <p>Time to unpickle all files: {{ time }}</p>
 	<p>Experimental data set: <select name="expt"><option value="aerobicOnly">Aerobic only</option>
-    <option value="anaerobicOnly">Anaerobic only</option>
-    </select></p>
+    <option value="anaerobicOnly" selected>Anaerobic only</option>
+    </select></p>Aerobic data contains 3 replicates, orange replicate is suspicious; all sgRNAs visible.<br>
+     Anaerobic data contains 3 replicates, sgRNAs with less than
+    60 counts to start are excluded.
 	</body>
 	
 </html>

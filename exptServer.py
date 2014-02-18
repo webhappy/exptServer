@@ -3,6 +3,7 @@ import os
 import cPickle,time
 import csv
 import numpy
+import pandas
 
 app = Flask(__name__)
 
@@ -41,7 +42,7 @@ def getExptResultsFromAerobic (left, right):
     exptResults={}
     ret['exptNames']=['Aerobic 1', 'Aerobic 2','Aerobic 3']
     ret['exptColors']=['orange','blue','blue']
-    curExpt=aerobicExptData
+    curExpt=allData['aerobic']
     for k in range(len(curExpt['pos'])):
         curPos = curExpt['pos'][k]
         if curPos>=left and curPos +20 <= right:
@@ -71,7 +72,7 @@ def getExptResultsFromAnaerobic (left, right):
     exptResults={}
     ret['exptNames']=['Anaerobic 1', 'Anaerobic 2','Anaerobic 3']
     ret['exptColors']=['black','black','black']
-    curExpt=anaerobicExptData
+    curExpt=allData['anaerobic']
     for k in range(len(curExpt['pos'])):
         curPos = curExpt['pos'][k]
         if curPos>=left and curPos +20 <= right:
@@ -168,31 +169,17 @@ promoters=cPickle.load(open('promoters_pickled.txt','rb'))
 TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
 sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
 
-#(EXPT_RESULTS,EXPT_POSITIONS,EXPT_STRAND)=cPickle.load(open('expt_results.txt','rb'))
-aerobicFile=csv.reader(open('Aerobic.csv','rb'))
-header=aerobicFile.next()
-#sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
-aerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
-for row in aerobicFile:
-    aerobicExptData['pos'].append(int(row[0]))
-    aerobicExptData['strand'].append(row[2])
-    aerobicExptData['replicate1'].append(float(row[3]))
-    aerobicExptData['replicate2'].append(float(row[4]))
-    aerobicExptData['replicate3'].append(float(row[5]))
+def loadExptData (fileName):
+    #sgRNA_pos,seq,sgRNA_strand,aerobic_t8_1_LR,aerobic_t8_2_LR,aerobic_t8_3_LR
+    data=pandas.io.parsers.read_csv(fileName)
+    return {'pos':data['sgRNA_pos'].values.tolist(),'strand':data['sgRNA_strand'].values.tolist(),
+            'replicate1':data[[-3]].values.tolist(),'replicate2':data[[-2]].values.tolist(),'replicate3':data[[-1]].values.tolist()}
 
-anaerobicFile=csv.reader(open('Anaerobic.csv','rb'))
-header=anaerobicFile.next()
-#sgRNA_pos,seq,sgRNA_strand,t8_1_LR,t8_2_LR,t8_3_LR
-anaerobicExptData={'pos':[],'strand':[],'replicate1':[],'replicate2':[],'replicate3':[]}
-for row in anaerobicFile:
-    anaerobicExptData['pos'].append(int(row[0]))
-    anaerobicExptData['strand'].append(row[2])
-    anaerobicExptData['replicate1'].append(float(row[3]))
-    anaerobicExptData['replicate2'].append(float(row[4]))
-    anaerobicExptData['replicate3'].append(float(row[5]))
-
-sd_all_aerobic=numpy.std(numpy.array(aerobicExptData['replicate1']+aerobicExptData['replicate2']+aerobicExptData['replicate3']));
-sd_all_anaerobic=numpy.std(numpy.array(anaerobicExptData['replicate1']+anaerobicExptData['replicate2']+anaerobicExptData['replicate3']))
+allData={'aerobic':loadExptData('Aerobic.csv'),'anaerobic':loadExptData('Anaerobic - filtered over 60.csv')}
+sd_all_aerobic=numpy.std(numpy.array(
+    allData['aerobic']['replicate1']+ allData['aerobic']['replicate2']+ allData['aerobic']['replicate3']));
+sd_all_anaerobic=numpy.std(numpy.array(
+    allData['anaerobic']['replicate1']+ allData['anaerobic']['replicate2']+ allData['anaerobic']['replicate3']))
 # print "SD's over all aerobic data is "+str(sd_all_aerobic)
 # print "SD's over all anaerobic data is "+str(sd_all_anaerobic)
 

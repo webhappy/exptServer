@@ -108,6 +108,11 @@ function updateChartBoundaries() {
     chart1.scale.min = leftVal;
     return {rightVal: rightVal, leftVal: leftVal};
 }
+
+/**
+ * Calls AJAX and then redraws upon success
+ * @param doNotModifySlider Leave blank or set false to allow slider bar to readjust.
+ */
 function updateAjax(doNotModifySlider) {
     $.ajax({
         url:  '/getFeatures',
@@ -126,7 +131,7 @@ function updateAjax(doNotModifySlider) {
             addJSONDataToChart(json, chart1);
 
             if (!doNotModifySlider) {
-                sliderNTWidth = Math.max(10000, ( rightVal-leftVal) * 5);
+                sliderNTWidth = Math.max(1000, ( rightVal-leftVal) * 5);
                 $('#slider').noUiSlider({range:[0, sliderNTWidth]},true);
                 chart1.ntOffset = Math.max(0, Math.round((leftVal + rightVal) / 2) - sliderNTWidth / 2);
                 $('#slider').val([leftVal - chart1.ntOffset, rightVal - chart1.ntOffset]);
@@ -207,18 +212,18 @@ function initializePage(canvasName) {
             { return;} //abort if we just scrolled
             if (delta > 0) {
                 //zoom out
-                var factor=200;//Math.max(100,Math.round(.01*chart1.scale.min));
+                var factor=Math.round(.25*(chart1.scale.max-chart1.scale.min));//Math.max(100,Math.round(.01*chart1.scale.min));
                 //factor=Math.min(factor,500);
                   var newLeft=chart1.scale.min-factor;
                   var newRight=chart1.scale.max+factor;
             }else {
                 //zoom in
-                var factor=-200;//Math.max(100,Math.round(.01*chart1.scale.min));
+                var factor=-1*Math.round(.25*(chart1.scale.max-chart1.scale.min));
                 //factor=Math.min(factor,500);
                   var newLeft=chart1.scale.min-factor;
                   var newRight=chart1.scale.max+factor;
             }
-            if (newRight-newLeft < 100) {
+            if (newRight-newLeft < 50) {
                 return false;
             }
             $('input[name="left"]').val(newLeft);
