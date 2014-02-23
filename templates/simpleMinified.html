@@ -1,0 +1,37 @@
+<!DOCTYPE HTML> 
+<html lang="en">
+	<head>
+          <script src="{{ url_for('static',filename='min.js') }}" ></script>
+      <script src="{{ url_for('static',filename='minGlyph.js') }}" ></script>
+        	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='jquery.nouislider.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='demos.css') }}" />
+	<!-- .contentHolder { position:relative; margin:0px auto; padding:0px; width: 600px; height: 50px; overflow: hidden; }
+	-->
+        <style>
+
+        .spacer { text-align:center }
+        .scrollbarHolder { position:relative; margin:0px auto; padding:0px; width: 600px; height: 400px; overflow: hidden; }
+</style>
+    </head>
+	
+	<body onload="initializePage('canvas')">
+
+     <div id="slider" class="contentHolder">
+    </div>
+       <p>Left: <input type=text size=7 name=left value="1489194">Right: <input type=text size=7 name=right value="1490630"><a href=# id=fetch>Refresh</a>
+<span style="float:right">Gene to zoom to: <input id="geneInput" type="text" size="6" name="gene"></span>
+
+		<div id="container" style="position:relative; left:0px">
+			<canvas id="canvas" width="350" height="780" ></canvas>
+			</br><a id="export">Export as PNG (right click Save As)</a>
+		</div>
+
+    <p>Time to unpickle all files: {{ time }}</p>
+	<p>Experimental data set: <select name="expt"><option value="aerobicOnly">Aerobic only</option>
+    <option value="anaerobicOnly" selected>Anaerobic only</option>
+    </select></p>Aerobic data contains 3 replicates, orange replicate is suspicious; all sgRNAs visible.<br>
+     Anaerobic data contains 3 replicates, sgRNAs with less than
+    60 counts to start are excluded.
+	</body>
+	
+</html>

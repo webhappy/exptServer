@@ -1,0 +1,4 @@
+#!/bin/bash
+java -jar ~/Downloads/compiler-latest/compiler.jar --js `find static/src/*.js` --js_output_file static/min.js --language_in ECMASCRIPT5
+java -jar ~/Downloads/compiler-latest/compiler.jar --js `find static/src/glyph/*.js` --js_output_file static/minGlyph.js --language_in ECMASCRIPT5
+java -jar ~/Downloads/compiler-latest/compiler.jar --js static/src/jquery.mousewheel.js static/src/jquery.nouislider.js static/src/kinetic-v5.0.1.js --js_output_file static/minLibs.js --language_in ECMASCRIPT5

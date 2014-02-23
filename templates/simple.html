@@ -1,18 +1,17 @@
 <!DOCTYPE HTML> 
 <html lang="en">
 	<head>
-         <script src="{{ url_for('static',filename='src/jquery-2.1.0.js') }}" ></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js" ></script>
       <script src="{{ url_for('static',filename='src/Scribl.class.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/Scribl.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/Scribl.events.js') }}" ></script>
+   {#   <script src="{{ url_for('static',filename='src/Scribl.events.js') }}" ></script> #}
         <script src="{{ url_for('static',filename='src/Scribl.lane.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/Scribl.glyph.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/FeatureTrack.js') }}" ></script>
 <script src="{{ url_for('static',filename='src/Scribl.utils.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/Scribl.tooltips.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/Scribl.svg.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/Scribl.track.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/glyph/Promoter.js') }}" ></script>
+        <script src="{{  url_for('static', filename='minGlyph.js') }}"></script>"
+  {#    <script src="{{ url_for('static',filename='src/glyph/Promoter.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/Scribl.arrow.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/Scribl.blockarrow.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/Scribl.complex.js') }}" ></script>
@@ -20,12 +19,14 @@
         <script src="{{ url_for('static',filename='src/glyph/Scribl.rect.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/Scribl.seq.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/glyph/sgRNATicker.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/glyph/TFBS.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/jquery.mousewheel.js') }}" ></script>
+        <script src="{{ url_for('static',filename='src/glyph/TFBS.js') }}" ></script> #}
+     <script src="{{  url_for('static', filename='minLibs.js') }}"></script>"
+     {#    <script src="{{ url_for('static',filename='src/jquery.mousewheel.js') }}" ></script>
         <script src="{{ url_for('static',filename='src/jquery.nouislider.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/jquery-ui-1.10.4.custom.js') }}" ></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js" ></script>
+
+        <script src="{{ url_for('static',filename='src/kinetic-v5.0.1.js') }}" ></script> #}
         <script src="{{ url_for('static',filename='src/ajaxHandler.js') }}" ></script>
-        <script src="{{ url_for('static',filename='src/kinetic-v5.0.1.js') }}" ></script>
         	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='jquery.nouislider.css') }}" />
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='demos.css') }}" />
 	<!-- .contentHolder { position:relative; margin:0px auto; padding:0px; width: 600px; height: 50px; overflow: hidden; }
