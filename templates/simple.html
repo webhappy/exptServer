@@ -38,11 +38,11 @@
 		</div>
 
     <p>Time to unpickle all files: {{ time }}</p>
-	<p>Experimental data set: <select name="expt"><option value="aerobicOnly">Aerobic only</option>
-    <option value="anaerobicOnly" selected>Anaerobic only</option>
-    </select></p>Aerobic data contains 3 replicates, orange replicate is suspicious; all sgRNAs visible.<br>
-     Anaerobic data contains 3 replicates, sgRNAs with less than
-    60 counts to start are excluded.
+	<p>Experimental data set: <select name="expt">
+        {% for k in allData.iterkeys() %}
+       <option value="{{ k }}" {%  if k==defaultExpt %}selected{% endif %}>{{ k }}</option>
+        {%  endfor %}
+    </select></p>Data last updated 2/28. P-vals from edgeR.
 	</body>
  {#   <script src="{{ url_for('static',filename='src/Scribl.events.js') }}" ></script> #}
       <script src="{{ url_for('static',filename='src/glyph/Promoter.js') }}" ></script>

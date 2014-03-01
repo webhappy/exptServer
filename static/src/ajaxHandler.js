@@ -50,8 +50,8 @@ function addJSONDataToChart (json, chart1){
     var exptInfoWithResults = json[3];
     var exptResults = exptInfoWithResults['exptResults'];
     chart1.sd = exptInfoWithResults['all_sd'];
-    chart1.exptNames = exptInfoWithResults.exptNames;
-    chart1.exptColors=exptInfoWithResults.exptColors;
+    chart1.y_max = exptInfoWithResults['max'];
+    chart1.y_min = exptInfoWithResults['min'];
     var sRNA = json[4];
 
     for (var j=0;j<genes.length;j++) {
@@ -91,12 +91,9 @@ function addJSONDataToChart (json, chart1){
 
     for (var curLoc in exptResults) {
         curLoc=parseInt(curLoc);
-        var strand=exptResults[curLoc][0];
+        var curTicker=exptResults[curLoc]
 
-         //Force elements in results as a floating point instead of a string
-        for (var j=1;j<exptResults[curLoc].length;j++)
-            exptResults[curLoc][j] = parseFloat(exptResults[curLoc][j]);
-        chart1.addTicker(curLoc,strand,exptResults[curLoc].slice(1))
+        chart1.addTicker(curLoc,curTicker['strand'],curTicker['logFC'],curTicker['pval'],curTicker['message'],curTicker['seq'])
     }
 }
 
@@ -161,6 +158,7 @@ function getCoordsByAJAX (gene) {
                 //alert('Coords for gene '+gene+' could not be located.');
                 return
             } else {
+                writeMessage('Zooming to gene '+gene+'.');
                 $('input[name="left"]').val(left);
                 $('input[name="right"]').val(right);
                 updateAjax();

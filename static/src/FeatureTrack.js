@@ -44,136 +44,20 @@ var FeatureTrack = Lane.extend({
         return l;
     },
 
-    drawSmootherForStrand: function (group,origTickers,strand,color){
-         var Y_MIN=-4;
-        var Y_MAX=4;
-        function convertYValtoPixelPos (yVal) {
-            var adj=-1.0*RESULT_HEIGHT * (yVal - Y_MIN)/(Y_MAX-Y_MIN);
-            if ( adj < -RESULT_HEIGHT)
-                adj=-RESULT_HEIGHT;
-            if ( adj > RESULT_HEIGHT)
-                adj=RESULT_HEIGHT;
-           // alert(adj+RESULT_HEIGHT);
-            return adj+RESULT_HEIGHT; //Notice it's slightly different from drawExptResults
-        }
-
-        var topPositions={}, botPositions={};
-        var tickers=[];
-        var OFFSET=10;
-        for (var j=0;j<origTickers.length;j++) {
-            if ( origTickers[j].strand==strand)
-                tickers.push(origTickers[j]);
-        }
-        for (var j=0;j<tickers.length;j++) {
-            var cur=tickers[j];
-            var m = mean(cur.yVals);
-            var stdErr = std(cur.yVals) / Math.sqrt(cur.yVals.length);
-            topPositions[cur.left+OFFSET]=m+stdErr;
-            botPositions[cur.left+OFFSET]=m-stdErr;
-        }
-
-        var NUM_INTERPOLATING_POINTS=500;
-        var interval=(this.chart.scale.max-this.chart.scale.min)/NUM_INTERPOLATING_POINTS;
-        var curIdx=0; //increment this to keep track of where we are in this.tickers
-        var prevTickerCoord=tickers[0].left+OFFSET;
-        var prevTickerYtop=topPositions[prevTickerCoord],prevTickerYbot=botPositions[prevTickerCoord];
-        var lastInterpolatingYtop=convertYValtoPixelPos(prevTickerYtop);
-        var lastInterpolatingYbot=convertYValtoPixelPos(prevTickerYbot);
-        var lastInterpolatingX=this.getTickerPositionX(prevTickerCoord);
-
-        for (var curCoord=this.chart.scale.min;curCoord<= this.chart.scale.max;curCoord+=interval) {
-            var conf=0; //increase this for very close points
-            for (var j=0;j<tickers.length;j++){
-                //calculate distance for this
-                if (Math.abs(tickers[j].left+OFFSET-curCoord)<500){
-                    conf+=Math.exp((-Math.pow(tickers[j].left+OFFSET-curCoord,2))/20);
-                }
-            }
-            //conf /= tickers.length;
-
-            if (conf > 1e-5)
-            {
-                if (curIdx < tickers.length && curCoord>=tickers[curIdx].left+OFFSET){
-                    //need to increment curIdx
-                    prevTickerCoord=tickers[curIdx].left+OFFSET;
-                    prevTickerYtop = topPositions[prevTickerCoord];
-                    prevTickerYbot=botPositions[prevTickerCoord];
-                    var curTopYPixel=convertYValtoPixelPos(prevTickerYtop);
-                    var curBotYPixel = convertYValtoPixelPos(prevTickerYbot);
-                    var curXPixel=this.getTickerPositionX(curCoord);
-                    if (curIdx>0) {
-                        var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,opacity:conf,stroke:'',
-                            points:[lastInterpolatingX-2,lastInterpolatingYtop,lastInterpolatingX-2,lastInterpolatingYbot,curXPixel,curBotYPixel,curXPixel,curTopYPixel]});
-
-                    }else {
-                       var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,opacity:conf,stroke:'',
-                            points:[curXPixel-interval,curTopYPixel,curXPixel-interval,curBotYPixel,curXPixel,curBotYPixel,curXPixel,curTopYPixel]});
-                    }
-                    group.add(l);
-                    lastInterpolatingX=curXPixel;
-                    lastInterpolatingYtop=curTopYPixel;
-                    lastInterpolatingYbot=curBotYPixel;
-                    curIdx++;
-                }else if (curIdx==0 || curIdx>=tickers.length){
-                    var curTopYPixel=convertYValtoPixelPos(prevTickerYtop);
-                    var curBotYPixel = convertYValtoPixelPos(prevTickerYbot);
-                    var curXPixel=this.getTickerPositionX(curCoord);
-                    var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,opacity:conf,stroke:'',
-                            points:[curXPixel-interval,curTopYPixel,curXPixel-interval,curBotYPixel,curXPixel,curBotYPixel,curXPixel,curTopYPixel]});
-                    group.add(l);
-                }
-                    else
-                    {
-                        //     if (curIdx>0) {
-                        //interpolate between prevPosition and curIdx
-                        var nextX=tickers[curIdx].left+OFFSET;
-                        var nextYtop=topPositions[nextX];
-                        var nextYbot=botPositions[nextX];
-                        //newY=lastY + deltaX * slope
-                        var changeYtop=prevTickerYtop+(curCoord-prevTickerCoord)*(nextYtop-prevTickerYtop)/(nextX-prevTickerCoord);
-                        var changeYbot=prevTickerYbot+(curCoord-prevTickerCoord)*(nextYbot-prevTickerYbot)/(nextX-prevTickerCoord);
-
-                        var curYPixelTop = convertYValtoPixelPos(changeYtop);
-                        var curYPixelBot = convertYValtoPixelPos(changeYbot);
-                        var curXPixel=this.getTickerPositionX(curCoord);
-
-                        // if (conf<1e-6)
-                        //     continue; //don't attempt to draw a line
-                        // {
-                        //draw a line
-                        var l=new Kinetic.Line({closed:true,strokeWidth:0,fill:color,stroke:'',opacity:conf,
-                            points:[lastInterpolatingX-2,lastInterpolatingYtop,lastInterpolatingX-2,lastInterpolatingYbot,curXPixel,curYPixelBot,curXPixel,curYPixelTop]});
-                        group.add(l);
-                        // }
-                        lastInterpolatingYbot=curYPixelBot;
-                        lastInterpolatingYtop=curYPixelTop;
-                        lastInterpolatingX=curXPixel;
-                        // }
-                }
-            }
-
-        }
-    },
-
-    drawSmoother: function (resultsLayer) {
-        var group = new Kinetic.Group();
-
-        var origTickers = this.tickers;
-        this.drawSmootherForStrand(group,origTickers,'+','#B8A1B8');
-        this.drawSmootherForStrand(group,origTickers,'-','#889F9A');
-
-        resultsLayer.add(group);
-    },
-
     /**
      * Assumes drawScale in the associated chart has already been called. We will use the now computed offset
      */
     drawExptResults: function (layer) {
         function getHeight (yVal) {
-            return 1.0*RESULT_HEIGHT * (yVal - Y_MIN)/(Y_MAX-Y_MIN)
+            return -20 + 1.0*RESULT_HEIGHT * (yVal - Y_MIN)/(Y_MAX-Y_MIN)
         }
-        var Y_MIN=-4;
-        var Y_MAX=4;
+
+        function convertPvalToAlpha (pVal) {
+            return .8921*Math.exp(-10.8977*pVal)+.2;
+        }
+
+        var Y_MIN=this.chart.y_min;
+        var Y_MAX=this.chart.y_max;
         var ARROW_PIXELS=5;//Math.round(this.chart.convertNtsToPixels(7));
 
         var drawLinesAtSD = [-3, -2, -1, 1, 2];
@@ -184,7 +68,7 @@ var FeatureTrack = Lane.extend({
             this.drawIndicatorLine(layer, yPos, curSD+' SD='+curY.toPrecision(4), 40, 1, 'grey');
         }
 
-        this.drawIndicatorLine(layer, -RESULT_HEIGHT / 2, 'LR=0', 10, 2, 'black',[15,5]);
+        this.drawIndicatorLine(layer, getHeight(0) - RESULT_HEIGHT, 'LR=0', 10, 2, 'black',[15,5]);
 
         //huh?
         //this.drawSmoother(layer);
@@ -192,27 +76,32 @@ var FeatureTrack = Lane.extend({
         var pixelsWidth=Math.ceil(this.chart.convertNtsToPixels(20));
         for (var j=0;j<this.tickers.length;j++) {
             var cur=this.tickers[j];
-            for (var k=0;k<cur.yVals.length;k++) {
-                var posX = this.getTickerPositionX(cur.left);
-                var height = getHeight(cur.yVals[k]);
-                var group=new Kinetic.Group({offsetX:-posX,offsetY:-RESULT_HEIGHT+height});
-                if ( cur.strand=='+' ) {
-                    group.add(new Kinetic.Line({strokeWidth:2,points: [0, 0, pixelsWidth, 0,pixelsWidth-ARROW_PIXELS,-ARROW_PIXELS],stroke:this.chart.exptColors[k]}));
-                }
-                else {
-                    group.add(new Kinetic.Line({strokeWidth:2,
-                        points: [pixelsWidth, 0, 0, 0,ARROW_PIXELS,ARROW_PIXELS],stroke:this.chart.exptColors[k]}
-                    ));
-                }
-                group.msg='yVals @ '+cur.left+'('+cur.strand+'), '+this.chart.exptNames[k]+': '+cur.yVals[k];
-                group.on('mouseover', function() {
-                    writeMessage(this.msg);
-                  });
-                  group.on('mouseout', function() {
-                    writeMessage('');
-                  });
-                layer.add(group);
+            var posX = this.getTickerPositionX(cur.left);
+            var height = getHeight(cur.yVal);
+            var group=new Kinetic.Group({offsetX:-posX,offsetY:-RESULT_HEIGHT+height,opacity:convertPvalToAlpha(cur.pval)});
+            if ( cur.strand=='+' ) { //alpha:convertPvalToAlpha(cur.pval)
+                group.add(new Kinetic.Line({stroke:'black',strokeWidth:2,points: [0, 0, pixelsWidth, 0,pixelsWidth-ARROW_PIXELS,-ARROW_PIXELS]}));
             }
+            else {
+                group.add(new Kinetic.Line({strokeWidth:2,
+                    points: [pixelsWidth, 0, 0, 0,ARROW_PIXELS,ARROW_PIXELS],stroke:'black'}
+                ));
+            }
+            group.msg='yVals @ '+cur.left+'('+cur.strand+") has log fold-change of "+cur.yVal.toFixed(2)+" at p="+(cur.pval <.01 ? cur.pval.toExponential(2) : cur.pval.toFixed(2))+ "\n"+cur.message.replace(/<br>/mg,'\n');
+            group.on('mouseover', function() {
+                chart1.preventDrag = true;
+                writeMessage(this.msg);
+              });
+              group.on('mouseout', function() {
+                chart1.preventDrag = false;
+                writeMessage('');
+              });
+            group.seq=cur.seq;
+            group.on('click',function(evt){
+                window.prompt("Copy sgRNA sequence to clipboard (Hit ctrl+c here)",this.seq); //Suggested http://stackoverflow.com/questions/400212/how-to-copy-to-the-clipboard-in-javascript
+                evt.cancelBubble=true;
+            })
+            layer.add(group);
         }
     },
 
@@ -242,10 +131,8 @@ var FeatureTrack = Lane.extend({
         return p;
     },
 
-    addTicker: function(left,strand, yVals) {
-        var t={'left':left,'strand':strand,'yVals':yVals}//new sgRNATicker(this,left,strand,yVals);
-        t.lane=this;
-        this.tickers.push(t);
+    addTicker: function(left,strand, yVal,pVal,message,seq) {
+        this.tickers.push({'left':left,'strand':strand,'yVal':yVal,'pval':pVal,'message':message,'seq':seq,'lane':this});
     },
 
     addSRNA: function(left, length, name,strand) {

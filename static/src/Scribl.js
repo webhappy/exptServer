@@ -56,7 +56,7 @@ var lastScrollTime=0; // In the callback, store the time and don't allow another
 DRAWINGS_HEIGHT=300;
 TFBS_HEIGHT=25;
 GENE_HEIGHT=2*TFBS_HEIGHT;
-RESULT_HEIGHT=300; //height of the panel where we draw the experimental data
+RESULT_HEIGHT=400; //height of the panel where we draw the experimental data
 function adjustMouseX (mouseX) {
     return mouseX-chart1.offset-$('.kineticjs-content').offset().left;
 }
@@ -74,7 +74,7 @@ function startDrag (mouseX,mouseY,which) {
         isDragging=false;
         chart1.text.setText('Aborting drag');
         chart1.messageLayer.draw();
-    } else { //start dragging
+    } else if ( !chart1.preventDrag ) { //start dragging OK
         isDragging=true;
         var adjXPos=adjustMouseX(mouseX);
         initAdjXPos=adjXPos;
@@ -141,6 +141,7 @@ var Scribl = Class.extend({
      * @api public
      */
     init: function (canvas) {
+        this.preventDrag = false;
         this.scrolled = false;
         // create canvas contexts
         var ctx;
@@ -362,8 +363,8 @@ var Scribl = Class.extend({
         return this.featureTrack.addTFBS(left, length, name, strand);
     },
 
-    addTicker: function (left, strand, yVals) {
-        return this.featureTrack.addTicker(left, strand, yVals);
+    addTicker: function(left,strand, yVal,pVal,message,seq) {
+        return this.featureTrack.addTicker(left,strand, yVal,pVal,message,seq);
     },
 
 
@@ -386,7 +387,6 @@ var Scribl = Class.extend({
         var numTracks = this.tracks.length;
         var newChart = new Scribl(this.canvas, this.width);
 
-        // TODO: make this more robust
         newChart.scale.min = this.scale.min;
         newChart.scale.max = this.scale.max;
         newChart.offset = this.offset;
@@ -532,7 +532,7 @@ var Scribl = Class.extend({
         this.stage.add(this.resultsLayer);
 
         dragDisplayLayer = new Kinetic.Layer({offsetX:-this.offset});
-        dragDisplayRect=new Kinetic.Rect({visible:false,height:DRAWINGS_HEIGHT+this.getScaleHeight()+RESULT_HEIGHT,y:50,width:1,x:0,stroke:'purple'});
+        dragDisplayRect=new Kinetic.Rect({visible:false,height:DRAWINGS_HEIGHT+RESULT_HEIGHT,y:50,width:1,x:0,stroke:'purple'});
         dragDisplayLayer.add(dragDisplayRect);
         this.stage.add(dragDisplayLayer);
         this.renderedAtMin=this.scale.min;
