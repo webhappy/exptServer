@@ -51,7 +51,7 @@ var TFBS = Glyph.extend({
         //layer.add()
         var text=new Kinetic.Text({
             text:this.name,
-            x:0,
+            x:length/2,
             y:- TFBS_HEIGHT/2,
             fontSize:15,
             fill:'black'
@@ -59,7 +59,10 @@ var TFBS = Glyph.extend({
         while ( text.fontSize()> 10 && text.width()>length)
             text.fontSize(text.fontSize()-1);
         if (this.strand=='-')
-            text.offsetX(length);
+            text.offsetX(length+5);
+        else
+            text.offsetX(text.width()/2);
+        text.offsetY(text.height()/2)
 
         group.add(text);
         layer.add(group);
