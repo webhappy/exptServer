@@ -7,6 +7,30 @@ import pandas
 
 app = Flask(__name__)
 
+
+start=time.clock()
+genes=cPickle.load(open('genes_pickled.txt','rb'))
+promoters=cPickle.load(open('promoters_pickled.txt','rb'))
+TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
+sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
+
+def loadExptData (fileName):
+    #"Seq","Pos","Strand","Pval","LogFC","message"
+    data=pandas.io.parsers.read_csv(fileName)
+    return {'seq':data['Seq'].values.tolist(),'pos':data['Pos'].values.tolist(),'strand':data['Strand'].values.tolist(),
+            'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist(),}
+
+allData={'anaerobic0314':loadExptData('anaerobic_0314.csv'),'anaerobic0228':loadExptData('anaerobic.csv'),'aerobic (2 and 3)':loadExptData('aerobic_2and3.csv')}
+defaultExpt = 'anaerobic0314'
+for k,v in allData.iteritems():
+    tempArray = numpy.array(allData[k]['logFC'])
+    v['sd'] = numpy.std(tempArray)
+    v['min'] = numpy.min(tempArray)
+    v['max'] = numpy.max(tempArray)
+
+end=time.clock()  # Done loading all files
+
+
 @app.route('/getFeatures')
 def getFeatures():
     left = request.args.get('left', 0, type=int)
@@ -88,28 +112,6 @@ def getsRNA (left, right):
 @app.route('/')
 def index():
     return render_template('simple.html',allData=allData,defaultExpt=defaultExpt,ajaxFunction='',time=end-start)
-
-start=time.clock()
-genes=cPickle.load(open('genes_pickled.txt','rb'))
-promoters=cPickle.load(open('promoters_pickled.txt','rb'))
-TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
-sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
-
-def loadExptData (fileName):
-    #"Seq","Pos","Strand","Pval","LogFC","message"
-    data=pandas.io.parsers.read_csv(fileName)
-    return {'seq':data['Seq'].values.tolist(),'pos':data['Pos'].values.tolist(),'strand':data['Strand'].values.tolist(),
-            'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist(),}
-
-allData={'anaerobic':loadExptData('anaerobic.csv'),'aerobic (2 and 3)':loadExptData('aerobic_2and3.csv')}
-defaultExpt = 'anaerobic'
-for k,v in allData.iteritems():
-    tempArray = numpy.array(allData[k]['logFC'])
-    v['sd'] = numpy.std(tempArray)
-    v['min'] = numpy.min(tempArray)
-    v['max'] = numpy.max(tempArray)
-
-end=time.clock()  # Done loading all files
 
 if __name__ == '__main__':
     import argparse
