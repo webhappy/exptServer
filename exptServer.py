@@ -20,8 +20,8 @@ def loadExptData (fileName):
     return {'seq':data['Seq'].values.tolist(),'pos':data['Pos'].values.tolist(),'strand':data['Strand'].values.tolist(),
             'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist(),}
 
-allData={'anaerobic0314':loadExptData('anaerobic_0314.csv'),'anaerobic0228':loadExptData('anaerobic.csv'),'aerobic (2 and 3)':loadExptData('aerobic_2and3.csv')}
-defaultExpt = 'anaerobic0314'
+allData={'anaerobic':loadExptData('anaerobic_0314.csv'),'aerobic (2 and 3)':loadExptData('aerobic_2and3.csv')}
+defaultExpt = 'anaerobic'
 for k,v in allData.iteritems():
     tempArray = numpy.array(allData[k]['logFC'])
     v['sd'] = numpy.std(tempArray)
