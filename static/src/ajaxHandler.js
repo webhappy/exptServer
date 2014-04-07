@@ -89,11 +89,9 @@ function addJSONDataToChart (json, chart1){
         var thisTFBS=chart1.addSRNA(left,len,name,strand);
     }
 
-    for (var curLoc in exptResults) {
-        curLoc=parseInt(curLoc);
-        var curTicker=exptResults[curLoc]
-
-        chart1.addTicker(curLoc,curTicker['strand'],curTicker['logFC'],curTicker['pval'],curTicker['message'],curTicker['seq'])
+    for (var j=0; j<exptResults.length; j++) {
+        var curTicker = exptResults[j];
+        chart1.addTicker(curTicker['pos'],curTicker['strand'],curTicker['logFC'],curTicker['pval'],curTicker['message'],curTicker['seq'])
     }
 }
 

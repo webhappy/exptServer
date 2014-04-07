@@ -49,14 +49,14 @@ def getGeneCoords():
 def getExptResults(left, right,exptSet):
     ret={}
 
-    exptResults={}
+    exptResults=[]
     curExpt=allData[exptSet]
     for k in range(len(curExpt['pos'])):
         curPos = curExpt['pos'][k]
         if curPos>=left and curPos +20 <= right:
-            exptResults[curPos]={'seq':curExpt['seq'][k],'strand':curExpt['strand'][k],
+            exptResults.append({'pos':curPos,'seq':curExpt['seq'][k],'strand':curExpt['strand'][k],
                                  'logFC':curExpt['logFC'][k],
-                                 'pval':curExpt['pval'][k],'message':curExpt['message'][k]};
+                                 'pval':curExpt['pval'][k],'message':curExpt['message'][k]});
     ret['exptResults']=exptResults
     ret['all_sd']=curExpt['sd']
     ret['max'] = curExpt['max']
