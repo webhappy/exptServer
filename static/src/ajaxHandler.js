@@ -203,6 +203,8 @@ function initializePage(canvasName) {
                 $('input[name="right"]').blur();
             }
         });
+
+    /*
         $('#container').mousewheel(function(event,delta) {
             if ( lastScrollTime && (new Date().getTime()-lastScrollTime) <150 )
             { return;} //abort if we just scrolled
@@ -228,6 +230,7 @@ function initializePage(canvasName) {
                 lastScrollTime=new Date().getTime();
             return false;
         });
+    */
 }
 
 $(function() {
