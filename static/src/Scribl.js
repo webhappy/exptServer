@@ -79,6 +79,7 @@ function startDrag (mouseX,mouseY,which) {
         var adjXPos=adjustMouseX(mouseX);
         initAdjXPos=adjXPos;
         initCoords=getCoordsFromOrigMouseX(mouseX);
+        dragDisplayRect.stroke('purple')
         chart1.text.setText('Drag to zoom');
         chart1.messageLayer.draw();
         dragDisplayRect.setVisible(true);
@@ -93,10 +94,19 @@ function checkDrag (mouseX,mouseY) {
         var adjXPos=adjustMouseX(mouseX);
         var currentCoords=getCoordsFromOrigMouseX(mouseX);
         chart1.text.setText('Zooming from '+chart1.getTickText(initCoords)+' to '+chart1.getTickText(currentCoords));
+        if (is_aborted_drag(adjXPos, currentCoords) )
+            dragDisplayRect.stroke('purple')
+        else
+            dragDisplayRect.stroke('blue')
         chart1.messageLayer.draw();
         dragDisplayRect.setWidth(adjXPos-initAdjXPos);
         dragDisplayLayer.draw();
     }
+}
+
+function is_aborted_drag(adjXPos, currentCoords) {
+    //Check if we have dragged beyond a set # of bases or a set # of pixels (either is enough to allow the drag-zoom)
+    return Math.abs(adjXPos - initAdjXPos) < 100 && Math.abs(currentCoords - initCoords) < 30;
 }
 
 function stopDrag (mouseX,mouseY) {
@@ -105,7 +115,7 @@ function stopDrag (mouseX,mouseY) {
         var adjXPos=adjustMouseX(mouseX);
         var currentCoords=getCoordsFromOrigMouseX(mouseX);
 
-        if (Math.abs(currentCoords-initCoords) < 50 )
+        if (is_aborted_drag(adjXPos, currentCoords) )
         {
             chart1.text.setText('Canceling zoom (select wider region)');
             chart1.messageLayer.draw();
