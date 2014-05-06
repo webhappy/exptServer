@@ -14,6 +14,7 @@ promoters=cPickle.load(open('promoters_pickled.txt','rb'))
 TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
 sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
 sgRNA_locations = {}  #  Map sgRNA 20-mer (lowercase string) to integer representing left coordinate to zoom to
+sgRNA_strand = {}  # Map sgRNA 20-mer to +/-
 
 def loadExptData (fileName):
     #"Seq","Pos","Strand","Pval","LogFC","message"
@@ -21,16 +22,39 @@ def loadExptData (fileName):
     return {'seq':data['Seq'].values.tolist(),'pos':data['Pos'].values.tolist(),'strand':data['Strand'].values.tolist(),
             'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist(),}
 
+def loadExptData_without_sgRNA_details (fileName):
+    #"Seq","Pos","Strand","Pval","LogFC","message"
+    data=pandas.io.parsers.read_csv(fileName)
+    t = {'seq':data['Seq'].values.tolist(),
+            'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist()}
+
+    locations_list = []
+    for seq in t['seq']:
+        locations_list.append(sgRNA_locations[seq])
+
+    strand_list = []
+    for seq in t['seq']:
+        strand_list.append(sgRNA_strand[seq])
+    t['strand'] = strand_list
+    t['pos'] = locations_list
+    return t
+
 allData={'anaerobic':loadExptData('anaerobic_0314.csv'),'aerobic (2 and 3)':loadExptData('aerobic_2and3.csv')}
 defaultExpt = 'anaerobic'
+
+for seq,pos in zip(allData['anaerobic']['seq'], allData['anaerobic']['pos']):
+    sgRNA_locations[seq.lower()] = pos
+
+for seq,strand in zip(allData['anaerobic']['seq'], allData['anaerobic']['strand']):
+    sgRNA_strand[seq.lower()] = strand
+
+allData['norfloxacin from 0502'] = loadExptData_without_sgRNA_details('0502_nor.csv')
+
 for k,v in allData.iteritems():
     tempArray = numpy.array(allData[k]['logFC'])
     v['sd'] = numpy.std(tempArray)
     v['min'] = numpy.min(tempArray)
     v['max'] = numpy.max(tempArray)
-
-for seq,pos in zip(allData['anaerobic']['seq'], allData['anaerobic']['pos']):
-    sgRNA_locations[seq.lower()] = pos
 
 end=time.clock()  # Done loading all files
 
@@ -51,10 +75,10 @@ def getGeneCoords():
 
 @app.route('/getSgRNACoords')
 def getSgRNACoords():
-    sgRNA=request.args.get('sgRNA')
+    sgRNA=request.args.get('sgRNA').lower()
     if sgRNA not in sgRNA_locations:
         return json.dumps([-1,-1])  # return [-1,-1] as error code
-    left_coord = sgRNA_locations[sgRNA.lower()]
+    left_coord = sgRNA_locations[sgRNA]
     return json.dumps([left_coord, left_coord+20])
 
 def getExptResults(left, right,exptSet):

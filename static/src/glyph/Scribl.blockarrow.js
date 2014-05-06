@@ -61,7 +61,7 @@ var BlockArrow = Glyph.extend({
         } else
             center=(lenRect+lenArrow/2)/2;
 
-        group.msg=this.name +' starts at '+this.position;
+        group.msg=this.name +' starts at '+this.position + ' for '+this.length+ ' bp.';
         group.on('mouseover', function() {
             writeMessage(this.msg);
         });
