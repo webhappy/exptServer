@@ -138,6 +138,35 @@ function updateAjax(doNotModifySlider) {
     })
 }
 
+function getCoordsBySgRNA (sgRNA) {
+    $.ajax({
+        url: '/getSgRNACoords',
+        data: {
+            sgRNA: sgRNA
+        },
+        type:"GET",
+        dataType:"json",
+        success:function (json) {
+            var left=json[0];
+            var right=json[1];
+            left-=100;
+            right+=100;
+            if (left<0) {
+                writeMessage('Coords for sgRNA '+sgRNA+' could not be located.');
+                //alert('Coords for gene '+gene+' could not be located.');
+                return
+            } else {
+                highlighted_sgRNAs.push(sgRNA.toLowerCase())
+                writeMessage('Zooming to sgRNA '+sgRNA+'.');
+                $('input[name="left"]').val(left);
+                $('input[name="right"]').val(right);
+                updateAjax();
+            }
+        },
+        error:function(xhr,status){alert('Error getting JSON for sgRNA coords')}
+    })
+}
+
 function getCoordsByAJAX (gene) {
     $.ajax({
         url: '/getGeneCoords',
@@ -183,6 +212,14 @@ function initializePage(canvasName) {
             }
         });
     $('input[name="gene"]').blur(function(evt){getCoordsByAJAX($('input[name="gene"]').val());
+        });
+    $('input[name="sgRNA"]').keypress(function(evt){
+            if (evt.which==13) {
+                getCoordsBySgRNA($('input[name="sgRNA"]').val());
+                $('#sgRNAInput').blur();
+            }
+        });
+    $('input[name="sgRNA"]').blur(function(evt){getCoordsBySgRNA($('input[name="sgRNA"]').val());
         });
     updateAjax();
     $(window).resize(function(){chart1.draw()});

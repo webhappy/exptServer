@@ -78,13 +78,20 @@ var FeatureTrack = Lane.extend({
             var cur=this.tickers[j];
             var posX = this.getTickerPositionX(cur.left);
             var height = getHeight(cur.yVal);
-            var group=new Kinetic.Group({offsetX:-posX,offsetY:-RESULT_HEIGHT+height,opacity:convertPvalToAlpha(cur.pval)});
+            if ( highlighted_sgRNAs.indexOf(cur.seq) > -1  ) {
+                opacity = 1;
+                color = 'magenta';
+            }else {
+                var opacity = convertPvalToAlpha(cur.pval);
+                var color = 'black';
+            }
+            var group=new Kinetic.Group({offsetX:-posX,offsetY:-RESULT_HEIGHT+height,opacity: opacity});
             if ( cur.strand=='+' ) { //alpha:convertPvalToAlpha(cur.pval)
-                group.add(new Kinetic.Line({stroke:'black',strokeWidth:2,points: [0, 0, pixelsWidth, 0,pixelsWidth-ARROW_PIXELS,-ARROW_PIXELS]}));
+                group.add(new Kinetic.Line({stroke: color,strokeWidth:2,points: [0, 0, pixelsWidth, 0,pixelsWidth-ARROW_PIXELS,-ARROW_PIXELS]}));
             }
             else {
                 group.add(new Kinetic.Line({strokeWidth:2,
-                    points: [pixelsWidth, 0, 0, 0,ARROW_PIXELS,ARROW_PIXELS],stroke:'black'}
+                    points: [pixelsWidth, 0, 0, 0,ARROW_PIXELS,ARROW_PIXELS],stroke:color}
                 ));
             }
             group.msg='yVals @ '+cur.left+'('+cur.strand+") has log fold-change of "+cur.yVal.toFixed(2)+" at p="+(cur.pval <.01 ? cur.pval.toExponential(2) : cur.pval.toFixed(2))+ "\n"+cur.message.replace(/<br>/mg,'\n');

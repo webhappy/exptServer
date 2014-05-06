@@ -13,6 +13,7 @@ genes=cPickle.load(open('genes_pickled.txt','rb'))
 promoters=cPickle.load(open('promoters_pickled.txt','rb'))
 TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
 sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
+sgRNA_locations = {}  #  Map sgRNA 20-mer (lowercase string) to integer representing left coordinate to zoom to
 
 def loadExptData (fileName):
     #"Seq","Pos","Strand","Pval","LogFC","message"
@@ -28,8 +29,10 @@ for k,v in allData.iteritems():
     v['min'] = numpy.min(tempArray)
     v['max'] = numpy.max(tempArray)
 
-end=time.clock()  # Done loading all files
+for seq,pos in zip(allData['anaerobic']['seq'], allData['anaerobic']['pos']):
+    sgRNA_locations[seq.lower()] = pos
 
+end=time.clock()  # Done loading all files
 
 @app.route('/getFeatures')
 def getFeatures():
@@ -45,6 +48,14 @@ def getGeneCoords():
         if name.lower() == gene.lower():
             return json.dumps([left_boundary,right_boundary])
     return json.dumps([-1,-1])  # Did not find this gene, return [-1,-1] as error code
+
+@app.route('/getSgRNACoords')
+def getSgRNACoords():
+    sgRNA=request.args.get('sgRNA')
+    if sgRNA not in sgRNA_locations:
+        return json.dumps([-1,-1])  # return [-1,-1] as error code
+    left_coord = sgRNA_locations[sgRNA.lower()]
+    return json.dumps([left_coord, left_coord+20])
 
 def getExptResults(left, right,exptSet):
     ret={}

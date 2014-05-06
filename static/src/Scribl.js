@@ -52,6 +52,7 @@ var initAdjXPos;
 var actualOffset;
 var dragDisplayLayer;
 var dragDisplayRect;
+var highlighted_sgRNAs = [];
 var lastScrollTime=0; // In the callback, store the time and don't allow another event until enough time has processed
 DRAWINGS_HEIGHT=300;
 TFBS_HEIGHT=25;
