@@ -9,10 +9,10 @@ app = Flask(__name__)
 
 
 start=time.clock()
-genes=cPickle.load(open('genes_pickled.txt','rb'))
-promoters=cPickle.load(open('promoters_pickled.txt','rb'))
-TFBS=cPickle.load(open('TFBS_pickled.txt','rb'))
-sRNA=cPickle.load(open('sRNA_pickled.txt','rb'))
+genes=cPickle.load(open('regulondb/genes_pickled.txt','rb'))
+promoters=cPickle.load(open('regulondb/promoters_pickled.txt','rb'))
+TFBS=cPickle.load(open('regulondb/TFBS_pickled.txt','rb'))
+sRNA=cPickle.load(open('regulondb/sRNA_pickled.txt','rb'))
 sgRNA_locations = {}  #  Map sgRNA 20-mer (lowercase string) to integer representing left coordinate to zoom to
 sgRNA_strand = {}  # Map sgRNA 20-mer to +/-
 
