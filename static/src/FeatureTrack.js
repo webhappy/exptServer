@@ -82,7 +82,7 @@ var FeatureTrack = Lane.extend({
                 opacity = 1;
                 color = 'magenta';
             }else {
-                var opacity = convertPvalToAlpha(cur.pval);
+                var opacity = cur.alpha;//convertPvalToAlpha(cur.pval);
                 var color = 'black';
             }
             var group=new Kinetic.Group({offsetX:-posX,offsetY:-RESULT_HEIGHT+height,opacity: opacity});
@@ -94,7 +94,9 @@ var FeatureTrack = Lane.extend({
                     points: [pixelsWidth, 0, 0, 0,ARROW_PIXELS,ARROW_PIXELS],stroke:color}
                 ));
             }
-            group.msg='yVals @ '+cur.left+'('+cur.strand+") has log fold-change of "+cur.yVal.toFixed(2)+" at p="+(cur.pval <.01 ? cur.pval.toExponential(2) : cur.pval.toFixed(2))+ "\n"+cur.message.replace(/<br>/mg,'\n');
+
+            group.msg = cur.message
+            //group.msg='yVals @ '+cur.left+'('+cur.strand+") has log fold-change of "+cur.yVal.toFixed(2)+" at p="+(cur.pval <.01 ? cur.pval.toExponential(2) : cur.pval.toFixed(2))+ "\n"+cur.message.replace(/<br>/mg,'\n');
             group.on('mouseover', function() {
                 chart1.preventDrag = true;
                 writeMessage(this.msg);
@@ -138,8 +140,8 @@ var FeatureTrack = Lane.extend({
         return p;
     },
 
-    addTicker: function(left,strand, yVal,pVal,message,seq) {
-        this.tickers.push({'left':left,'strand':strand,'yVal':yVal,'pval':pVal,'message':message,'seq':seq,'lane':this});
+    addTicker: function(left,strand, yVal,alpha,message,seq) {
+        this.tickers.push({'left':left,'strand':strand,'yVal':yVal,'alpha':alpha,'message':message,'seq':seq,'lane':this});
     },
 
     addSRNA: function(left, length, name,strand) {

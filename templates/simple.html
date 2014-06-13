@@ -40,8 +40,8 @@
 
     <p>Time to unpickle all files: {{ time }}</p>
 	<p>Experimental data set: <select name="expt">
-        {% for k in allData.iterkeys() %}
-       <option value="{{ k }}" {%  if k==defaultExpt %}selected{% endif %}>{{ k }}</option>
+        {% for k,v in allExpts.iteritems() %}
+       <option value="{{ v }}" {%  if k==defaultExpt %}selected{% endif %}>{{ k }}</option>
         {%  endfor %}
     </select></p>Data last updated 03/14. Aerobic and anaerobic data are correct. P-vals from edgeR.
 	</body>

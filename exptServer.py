@@ -4,9 +4,9 @@ import cPickle,time
 import csv
 import numpy
 import pandas
+import mysql.connector
 
 app = Flask(__name__)
-
 
 start=time.clock()
 genes=cPickle.load(open('regulondb/genes_pickled.txt','rb'))
@@ -15,47 +15,15 @@ TFBS=cPickle.load(open('regulondb/TFBS_pickled.txt','rb'))
 sRNA=cPickle.load(open('regulondb/sRNA_pickled.txt','rb'))
 sgRNA_locations = {}  #  Map sgRNA 20-mer (lowercase string) to integer representing left coordinate to zoom to
 sgRNA_strand = {}  # Map sgRNA 20-mer to +/-
+cnx = mysql.connector.connect(user='davidc', password='mysql_password', host='127.0.0.1',  database='CRISPR')
 
-def loadExptData (fileName):
-    #"Seq","Pos","Strand","Pval","LogFC","message"
-    data=pandas.io.parsers.read_csv(fileName)
-    return {'seq':data['Seq'].values.tolist(),'pos':data['Pos'].values.tolist(),'strand':data['Strand'].values.tolist(),
-            'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist(),}
+defaultExpt = 'aerobic (replicates 2 and 3)'
 
-def loadExptData_without_sgRNA_details (fileName):
-    #"Seq","Pos","Strand","Pval","LogFC","message"
-    data=pandas.io.parsers.read_csv(fileName)
-    t = {'seq':data['Seq'].values.tolist(),
-            'pval':data['Pval'].values.tolist(),'logFC':data['LogFC'].values.tolist(),'message':data['message'].values.tolist()}
-
-    locations_list = []
-    for seq in t['seq']:
-        locations_list.append(sgRNA_locations[seq])
-
-    strand_list = []
-    for seq in t['seq']:
-        strand_list.append(sgRNA_strand[seq])
-    t['strand'] = strand_list
-    t['pos'] = locations_list
-    return t
-
-allData={'anaerobic':loadExptData('anaerobic_0314.csv'),'aerobic (2 and 3)':loadExptData('aerobic_2and3.csv')}
-defaultExpt = 'anaerobic'
-
-for seq,pos in zip(allData['anaerobic']['seq'], allData['anaerobic']['pos']):
-    sgRNA_locations[seq.lower()] = pos
-
-for seq,strand in zip(allData['anaerobic']['seq'], allData['anaerobic']['strand']):
-    sgRNA_strand[seq.lower()] = strand
-
-allData['norfloxacin from 0502'] = loadExptData_without_sgRNA_details('0502_nor.csv')
-
-for k,v in allData.iteritems():
-    tempArray = numpy.array(allData[k]['logFC'])
-    v['sd'] = numpy.std(tempArray)
-    v['min'] = numpy.min(tempArray)
-    v['max'] = numpy.max(tempArray)
-
+allExpts = {}  # Map name to ID for each set of tickers that can be selected
+cursor = cnx.cursor()
+cursor.execute('select comparisonID, description FROM comparisons')
+for comparisonID, desc in cursor:
+    allExpts[desc] = comparisonID
 end=time.clock()  # Done loading all files
 
 @app.route('/getFeatures')
@@ -85,17 +53,14 @@ def getExptResults(left, right,exptSet):
     ret={}
 
     exptResults=[]
-    curExpt=allData[exptSet]
-    for k in range(len(curExpt['pos'])):
-        curPos = curExpt['pos'][k]
-        if curPos>=left and curPos +20 <= right:
-            exptResults.append({'pos':curPos,'seq':curExpt['seq'][k],'strand':curExpt['strand'][k],
-                                 'logFC':curExpt['logFC'][k],
-                                 'pval':curExpt['pval'][k],'message':curExpt['message'][k]});
+    cursor = cnx.cursor()
+    cursor.execute('select pos, seq, strand, val, alpha, message FROM tickers LEFT JOIN sgRNAs ON sgRNA_id=sgRNAs.id'
+                   ' where pos > %s and pos+20 < %s and comparison_id=%s', (left, right, exptSet))
+    for (pos,seq, strand, val, alpha, message ) in cursor:
+        exptResults.append({'pos':pos,'seq':seq,'strand':strand,'logFC':val,'alpha':alpha,'message':message})
+    cursor.execute('select minY, maxY, stdY FROM comparisons where comparisonID=%s',exptSet)
+    (ret['min'], ret['max'], ret['all_sd']) = cursor.fetchone()
     ret['exptResults']=exptResults
-    ret['all_sd']=curExpt['sd']
-    ret['max'] = curExpt['max']
-    ret['min'] = curExpt['min']
     return ret
 
 def getGenes(left, right):
@@ -146,7 +111,7 @@ def getsRNA (left, right):
 
 @app.route('/')
 def index():
-    return render_template('simple.html',allData=allData,defaultExpt=defaultExpt,ajaxFunction='',time=end-start)
+    return render_template('simple.html',allExpts=allExpts,defaultExpt=defaultExpt,ajaxFunction='',time=end-start)
 
 if __name__ == '__main__':
     import argparse
@@ -169,6 +134,7 @@ if __name__ == '__main__':
     #                 extra_files.append(filename)
 
     if cmd_args.debug_mode:
+        print "In debug mode"
         app_options["debug"] = True
         app_options["use_debugger"] = False
         app_options["use_reloader"] = False

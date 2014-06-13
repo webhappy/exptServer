@@ -91,7 +91,7 @@ function addJSONDataToChart (json, chart1){
 
     for (var j=0; j<exptResults.length; j++) {
         var curTicker = exptResults[j];
-        chart1.addTicker(curTicker['pos'],curTicker['strand'],curTicker['logFC'],curTicker['pval'],curTicker['message'],curTicker['seq'])
+        chart1.addTicker(curTicker['pos'],curTicker['strand'],curTicker['logFC'],curTicker['alpha'],curTicker['message'],curTicker['seq'])
     }
 }
 
