@@ -15,13 +15,14 @@ TFBS=cPickle.load(open('regulondb/TFBS_pickled.txt','rb'))
 sRNA=cPickle.load(open('regulondb/sRNA_pickled.txt','rb'))
 sgRNA_locations = {}  #  Map sgRNA 20-mer (lowercase string) to integer representing left coordinate to zoom to
 sgRNA_strand = {}  # Map sgRNA 20-mer to +/-
-cnx = mysql.connector.connect(user='davidc', password='mysql_password', host='127.0.0.1',  database='CRISPR')
+#cnx = mysql.connector.connect(user='davidc', password='mysql_password', host='127.0.0.1',  database='CRISPR')
+cnx = mysql.connector.connect(user='awsuser', password='mysql_password', host='mydb.c9w9as83ocgz.us-west-2.rds.amazonaws.com',  database='CRISPR')
 
 defaultExpt = 'aerobic (replicates 2 and 3)'
 
 allExpts = {}  # Map name to ID for each set of tickers that can be selected
 cursor = cnx.cursor()
-cursor.execute('select comparisonID, description FROM comparisons')
+cursor.execute('select comparisonID, description FROM comparisons where ready=1')
 for comparisonID, desc in cursor:
     allExpts[desc] = comparisonID
 end=time.clock()  # Done loading all files
