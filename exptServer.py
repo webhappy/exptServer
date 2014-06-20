@@ -4,7 +4,7 @@ import cPickle,time
 import csv
 import numpy
 import pandas
-import mysql.connector
+import sqlite3
 
 app = Flask(__name__)
 
@@ -16,7 +16,8 @@ sRNA=cPickle.load(open('regulondb/sRNA_pickled.txt','rb'))
 sgRNA_locations = {}  #  Map sgRNA 20-mer (lowercase string) to integer representing left coordinate to zoom to
 sgRNA_strand = {}  # Map sgRNA 20-mer to +/-
 #cnx = mysql.connector.connect(user='davidc', password='mysql_password', host='127.0.0.1',  database='CRISPR')
-cnx = mysql.connector.connect(user='awsuser', password='mysql_password', host='mydb.c9w9as83ocgz.us-west-2.rds.amazonaws.com',  database='CRISPR')
+#cnx = mysql.connector.connect(user='awsuser', password='mysql_password', host='mydb.c9w9as83ocgz.us-west-2.rds.amazonaws.com',  database='CRISPR')
+cnx = sqlite3.connect('local.db')
 
 defaultExpt = 'aerobic (replicates 2 and 3)'
 
@@ -54,12 +55,13 @@ def getExptResults(left, right,exptSet):
     ret={}
 
     exptResults=[]
+    cnx = sqlite3.connect('local.db')
     cursor = cnx.cursor()
     cursor.execute('select pos, seq, strand, val, alpha, message FROM tickers LEFT JOIN sgRNAs ON sgRNA_id=sgRNAs.id'
-                   ' where pos > %s and pos+20 < %s and comparison_id=%s', (left, right, exptSet))
+                   ' where pos > ? and pos+20 < ? and comparison_id=?', (left, right, exptSet))
     for (pos,seq, strand, val, alpha, message ) in cursor:
         exptResults.append({'pos':pos,'seq':seq,'strand':strand,'logFC':val,'alpha':alpha,'message':message})
-    cursor.execute('select minY, maxY, stdY FROM comparisons where comparisonID=%s',exptSet)
+    cursor.execute('select minY, maxY, stdY FROM comparisons where comparisonID=?',exptSet)
     (ret['min'], ret['max'], ret['all_sd']) = cursor.fetchone()
     ret['exptResults']=exptResults
     return ret
